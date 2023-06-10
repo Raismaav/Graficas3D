@@ -163,8 +163,8 @@ public class Figures3D {
         }
 
         for (int i = 0; i < figure[0].length; i++) {
-            figure[0][i] -= maxX + minX / 2;
-            figure[2][i] -= maxZ + minZ / 2;
+            figure[0][i] -= (maxX + minX) / 2;
+            figure[2][i] -= (maxZ + minZ) / 2;
         }
 
         double[][] identityMatrixY = {
@@ -187,8 +187,8 @@ public class Figures3D {
         }
 
         for (int i = 0; i < figure[0].length; i++) {
-            figure[0][i] += maxX + minX / 2;
-            figure[2][i] += maxZ + minZ / 2;
+            figure[0][i] += (maxX + minX) / 2;
+            figure[2][i] += (maxZ + minZ) / 2;
         }
     }
 
@@ -214,8 +214,8 @@ public class Figures3D {
         }
 
         for (int i = 0; i < figure[0].length; i++) {
-            figure[0][i] -= maxX + minX / 2;
-            figure[1][i] -= maxY + minY / 2;
+            figure[0][i] -= (maxX + minX) / 2;
+            figure[1][i] -= (maxY + minY) / 2;
         }
 
         double[][] identityMatrixZ = {
@@ -238,8 +238,8 @@ public class Figures3D {
         }
 
         for (int i = 0; i < figure[0].length; i++) {
-            figure[0][i] += maxX + minX / 2;
-            figure[1][i] += maxY + minY / 2;
+            figure[0][i] += (maxX + minX) / 2;
+            figure[1][i] += (maxY + minY) / 2;
         }
     }
 

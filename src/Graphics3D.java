@@ -3,7 +3,8 @@ import java.awt.*;
 
 public class Graphics3D extends Graphics {
 
-    private double[] projectionPlane, cameraPosition;
+    private double[] projectionPlane = new double[] {10, 10, 50};
+    private double[] cameraPosition;
     public Graphics3D(JPanel canvas, Color background) {
         super(canvas, background);
         cameraPosition = new double[3];
@@ -29,10 +30,11 @@ public class Graphics3D extends Graphics {
     }
 
     public void obliqueProjection(int[][] figure) {
+        repaintBackground();
         int[][] figureProjected = new int[figure.length][figure[0].length];
         for(int i = 0; i < figure[0].length; i++) {
-            figureProjected[0][i] = (int) Math.round(figure[0][i] + projectionPlane[0] * (-figure[2][i] / projectionPlane[2]) + 250);
-            figureProjected[1][i] = (int) Math.round(figure[1][i] + projectionPlane[1] * (-figure[2][i] / projectionPlane[2]) + 250);
+            figureProjected[0][i] = (int) Math.round(figure[0][i] + projectionPlane[0] * (-figure[2][i] / projectionPlane[2]));
+            figureProjected[1][i] = (int) Math.round(figure[1][i] + projectionPlane[1] * (-figure[2][i] / projectionPlane[2]));
         }
 
         //A-B
@@ -66,6 +68,7 @@ public class Graphics3D extends Graphics {
     }
 
     public void orthogonalProjection(int[][] figure) {
+        repaintBackground();
         int[][] figureProjected = new int[figure.length][figure[0].length];
         for(int i = 0; i < figure[0].length; i++) {
             figureProjected[0][i] = figure[0][i];
@@ -103,6 +106,7 @@ public class Graphics3D extends Graphics {
     }
 
     public void conicalProjection(int[][] figure) {
+        repaintBackground();
         int[][] figureProjected = new int[figure.length][figure[0].length];
         for(int i = 0; i < figure[0].length; i++) {
             figureProjected[0][i] = (int) Math.round(cameraPosition[0] + (figure[0][i] - cameraPosition[0]) * (-(cameraPosition[2] / (figure[2][i] - cameraPosition[2]))));

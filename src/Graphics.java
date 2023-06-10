@@ -3,18 +3,18 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Graphics {
-    private BufferedImage buffer;
+    private BufferedImage buffer, bufferBackground;
     private JPanel canvas;
-    private Color background;
+    private Color colorBackground = new Color(238, 238, 238);
 
-    public Graphics(JPanel canvas, Color background) {
+    public Graphics(JPanel canvas, Color colorBackground) {
         this.canvas = canvas;
         this.buffer = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        this.background = background;
+        this.colorBackground = colorBackground;
 
         for (int j = 0; j < buffer.getHeight() - 1; j++) {
             for (int i = 0; i <= buffer.getWidth() - 1; i++) {
-                buffer.setRGB(i, j, background.getRGB());
+                buffer.setRGB(i, j, colorBackground.getRGB());
             }
         }
         canvas.getGraphics().drawImage(buffer, 0, 0, canvas);
@@ -23,11 +23,10 @@ public class Graphics {
     public Graphics(JPanel canvas) {
         this.canvas = canvas;
         this.buffer = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        this.background = new Color(238, 238, 238);
 
         for (int j = 0; j < buffer.getHeight() - 1; j++) {
             for (int i = 0; i <= buffer.getWidth() - 1; i++) {
-                buffer.setRGB(i, j, background.getRGB());
+                buffer.setRGB(i, j, colorBackground.getRGB());
             }
         }
         canvas.getGraphics().drawImage(buffer, 0, 0, canvas);
@@ -36,6 +35,22 @@ public class Graphics {
     private void drawPixel(int x, int y, Color color) {
         if ((x >= 0 && x < buffer.getWidth()) && (y >= 0 && y < buffer.getHeight())) {
             buffer.setRGB(x, y, color.getRGB());
+        }
+    }
+
+    protected void repaintBackground() {
+        if (bufferBackground == null) {
+            for (int j = 0; j < buffer.getHeight() - 1; j++) {
+                for (int i = 0; i <= buffer.getWidth() - 1; i++) {
+                    buffer.setRGB(i, j, colorBackground.getRGB());
+                }
+            }
+        } else {
+            for (int j = 0; j < buffer.getHeight() - 1; j++) {
+                for (int i = 0; i <= buffer.getWidth() - 1; i++) {
+                    buffer.setRGB(i, j, bufferBackground.getRGB(i, j));
+                }
+            }
         }
     }
 
@@ -77,6 +92,7 @@ public class Graphics {
             }
         }
     }
+
     public void update() {
         canvas.getGraphics().drawImage(buffer, 0, 0, canvas);
     }
