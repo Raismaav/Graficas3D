@@ -1,18 +1,26 @@
 import java.util.Arrays;
 
-public class Figures3D {
+public class Figures {
 
     private int dx = 0, dy = 0, dz = 0;
     private double scale = 1;
     private int[][] figure, originalFigure;
-    private Face[] faces;
     private double[] rotaionAngles = {0, 0, 0};
 
-    public Figures3D() {
+    public Figures() {
 
     }
 
-    public Face[] getFigure() {
+    public Figures(int[][] figure) {
+        this.figure = new int[figure.length][figure[0].length];
+        this.originalFigure = new int[figure.length][figure[0].length];
+        for (int j = 0; j < this.originalFigure.length; j++) {
+            this.originalFigure[j] = Arrays.copyOf(figure[j], this.originalFigure[j].length);
+        }
+    }
+
+    public int[][] getFigure() {
+        int[][] returnFigure = new int[this.figure.length][figure[0].length];
         for (int j = 0; j < this.figure.length; j++) {
             this.figure[j] = Arrays.copyOf(this.originalFigure[j], this.figure[j].length);
         }
@@ -21,8 +29,24 @@ public class Figures3D {
         zAxisRotation();
         translation();
         escalation();
-        copyToVertices();
-        return Arrays.copyOf(faces, faces.length);
+        for (int j = 0; j < returnFigure.length; j++) {
+            returnFigure[j] = Arrays.copyOf(this.figure[j], returnFigure[j].length);
+        }
+        return returnFigure;
+    }
+
+    public int[][] getOriginalFigure() {
+        int[][] returnFigure = new int[this.originalFigure.length][this.originalFigure[0].length];
+        for (int j = 0; j < returnFigure.length; j++) {
+            returnFigure[j] = Arrays.copyOf(this.originalFigure[j], returnFigure[j].length);
+        }
+        return returnFigure;
+    }
+
+    public void setFigure(int[][] figure) {
+        for (int j = 0; j < this.originalFigure.length; j++) {
+            this.originalFigure[j] = Arrays.copyOf(figure[j], this.originalFigure[j].length);
+        }
     }
 
     public void setXAxisRotationAngle(double angle) {
@@ -45,6 +69,33 @@ public class Figures3D {
 
     public void setScale(double scale) {
         this.scale *= scale;
+    }
+
+    public static int[][] getCara() {
+        int[][] cuboImaginario = {
+                {200, 0, 200, 0},
+                {0, 0, 200, 200},
+                {0, 0, 0, 0},
+                {1, 1, 1, 1}};
+        return cuboImaginario;
+    }
+
+    public static int[][] getCuboPrueba() {
+        int[][] cuboImaginario = {
+                {200, 0, 200, 0, 200, 0, 200, 0},
+                {0, 0, 200, 200, 0, 0, 200, 200},
+                {0, 0, 0, 0, -200, -200, -200, -200},
+                {1, 1, 1, 1, 1, 1, 1, 1}};
+        return cuboImaginario;
+    }
+
+    public static int[][] getCuboPrueba2() {
+        int[][] cuboImaginario = {
+                {200, 100, 200, 100, 200, 100, 200, 100},
+                {100, 100, 200, 200, 100, 100, 200, 200},
+                {0, 0, 0, 0, -200, -200, -200, -200},
+                {1, 1, 1, 1, 1, 1, 1, 1}};
+        return cuboImaginario;
     }
 
     private void xAxisRotation() {
@@ -240,92 +291,6 @@ public class Figures3D {
 
         for (int j = 0; j < figure.length; j++) {
             figure[j] = Arrays.copyOf(finalMatrix[j], figure[j].length);
-        }
-    }
-
-    public void createPlane(int x, int y, int z, int large) {
-        int points = 4;
-        int numFaces = 1;
-        faces = new Face[numFaces];
-        faces[0] = new Face(points);
-        faces[0].setPoints(0, x - (large / 2), y - (large / 2), z);
-        faces[0].setPoints(1, x + (large / 2), y - (large / 2), z);
-        faces[0].setPoints(2, x + (large / 2), y + (large / 2), z);
-        faces[0].setPoints(3, x - (large / 2), y + (large / 2), z);
-        copyToOriginalFigure();
-    }
-
-    public void createCube(int x, int y, int z, int large) {
-        int points = 4;
-        int numFaces = 4;
-        faces = new Face[numFaces];
-        faces[0] = new Face(points);
-        faces[0].setPoints(0, x - (large / 2), y - (large / 2), z - (large / 2));
-        faces[0].setPoints(1, x + (large / 2), y - (large / 2), z - (large / 2));
-        faces[0].setPoints(2, x + (large / 2), y + (large / 2), z - (large / 2));
-        faces[0].setPoints(3, x - (large / 2), y + (large / 2), z - (large / 2));
-
-        faces[1] = new Face(points);
-        faces[1].setPoints(1, x - (large / 2), y - (large / 2), z + (large / 2));
-        faces[1].setPoints(0, x + (large / 2), y - (large / 2), z + (large / 2));
-        faces[1].setPoints(3, x + (large / 2), y + (large / 2), z + (large / 2));
-        faces[1].setPoints(2, x - (large / 2), y + (large / 2), z + (large / 2));
-
-        faces[2] = new Face(points);
-        faces[2].setPoints(0, x - (large / 2), y - (large / 2), z - (large / 2));
-        faces[2].setPoints(1, x + (large / 2), y - (large / 2), z - (large / 2));
-        faces[2].setPoints(2, x + (large / 2), y - (large / 2), z + (large / 2));
-        faces[2].setPoints(3, x - (large / 2), y - (large / 2), z + (large / 2));
-
-        faces[3] = new Face(points);
-        faces[3].setPoints(1, x - (large / 2), y + (large / 2), z - (large / 2));
-        faces[3].setPoints(0, x + (large / 2), y + (large / 2), z - (large / 2));
-        faces[3].setPoints(3, x + (large / 2), y + (large / 2), z + (large / 2));
-        faces[3].setPoints(2, x - (large / 2), y + (large / 2), z + (large / 2));
-
-        /*faces[4] = new Face(points);
-        faces[4].setPoints(0, x - (large / 2), y - (large / 2), z - (large / 2));
-        faces[4].setPoints(1, x - (large / 2), y - (large / 2), z + (large / 2));
-        faces[4].setPoints(2, x - (large / 2), y + (large / 2), z + (large / 2));
-        faces[4].setPoints(3, x - (large / 2), y + (large / 2), z - (large / 2));
-
-
-        faces[5] = new Face(points);
-        faces[5].setPoints(0, x + (large / 2), y - (large / 2), z - (large / 2));
-        faces[5].setPoints(1, x + (large / 2), y - (large / 2), z + (large / 2));
-        faces[5].setPoints(2, x + (large / 2), y + (large / 2), z + (large / 2));
-        faces[5].setPoints(3, x + (large / 2), y + (large / 2), z - (large / 2));*/
-        copyToOriginalFigure();
-    }
-
-    private void copyToOriginalFigure() {
-        int figuresLenght = 0;
-        int i = 0;
-        for (int face = 0; face < faces.length; face++) {
-            figuresLenght += faces[face].getPoints();
-        }
-        figure = new int[4][figuresLenght];
-        originalFigure = new int[4][figuresLenght];
-        for (int face = 0; face < faces.length; face++) {
-            int[][] originalVertices = faces[face].getOriginalVertices();
-            System.arraycopy(originalVertices[0], 0, originalFigure[0], i, originalVertices[0].length);
-            System.arraycopy(originalVertices[1], 0, originalFigure[1], i, originalVertices[1].length);
-            System.arraycopy(originalVertices[2], 0, originalFigure[2], i, originalVertices[2].length);
-            System.arraycopy(originalVertices[3], 0, originalFigure[3], i, originalVertices[3].length);
-            i += originalVertices[0].length;
-        }
-    }
-
-    private void copyToVertices() {
-        int i = 0;
-        for (int face = 0; face < faces.length; face++) {
-            int[][] vertices = new int[4][faces[face].getPoints()];
-            System.arraycopy(figure[0], i, vertices[0], 0, vertices[0].length);
-            System.arraycopy(figure[1], i, vertices[1], 0, vertices[1].length);
-            System.arraycopy(figure[2], i, vertices[2], 0, vertices[2].length);
-            System.arraycopy(figure[3], i, vertices[3], 0, vertices[3].length);
-            faces[face].setVertices(vertices);
-            i += faces[0].getPoints();
         }
     }
 }

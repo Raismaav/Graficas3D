@@ -17,35 +17,37 @@ public class Ventana extends JFrame{
 
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //practica1Obliuca();
-        //practica2Ortogonal();
-        //practica3UnPuntoDeFuga();
-        //practica4DosPuntosDeFuga();
-        //practica5TresPuntosDeFuga();
-        //practica6PuntosDeFuga();
-        practica7Rotacion();
-        //practica8Traslacion();
-        //practica9Escalacion();
-        //practica10Relleno();
+        paint();
     }
 
     public void paint() {
-        Figures3D figures = new Figures3D();
-        Figures3D pruebas = new Figures3D(figures.getCuboPrueba());
-        Graphics3D graphics = new Graphics3D(canvas);
-        graphics.conicalProjection(pruebas.getFigure());
-        graphics.conicalProjection(figures.getCuboPrueba2());
+        Figures3D figura1= new Figures3D();
+        figura1.createPlane(200, 200, -100, 100);
+        Graphics3D graphics3D = new Graphics3D(canvas);
+        for (int i = 0; i < 1000; i++) {
+            graphics3D.orthogonalProjection(figura1.getFigure());
+            figura1.setXAxisRotationAngle(2);
+            figura1.setYAxisRotationAngle(3);
+            figura1.setZAxisRotationAngle(0);
+            //figura1.setTranslations(1,0,-10);
+            //figura1.setScale(1.01);
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void practica1Obliuca() {
-        Figures3D figures = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures = new Figures(Figures.getCuboPrueba());
         figures.setTranslations(100, -100, 0);
         Graphics3D graphics = new Graphics3D(canvas);
         graphics.obliqueProjection(figures.getFigure());
     }
 
     public void practica2Ortogonal() {
-        Figures3D figures = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures = new Figures(Figures.getCuboPrueba());
         figures.setTranslations(150, 200, 0);
         figures.setXAxisRotationAngle(45);
         figures.setYAxisRotationAngle(45);
@@ -55,14 +57,14 @@ public class Ventana extends JFrame{
     }
 
     public void practica3UnPuntoDeFuga() {
-        Figures3D figures = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures = new Figures(Figures.getCuboPrueba());
         figures.setTranslations(200, 200, 0);
         Graphics3D graphics = new Graphics3D(canvas);
         graphics.conicalProjection(figures.getFigure());
     }
 
     public void practica4DosPuntosDeFuga() {
-        Figures3D figures = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures = new Figures(Figures.getCuboPrueba());
         figures.setTranslations(200, 200, 0);
         figures.setYAxisRotationAngle(45);
         Graphics3D graphics = new Graphics3D(canvas);
@@ -70,7 +72,7 @@ public class Ventana extends JFrame{
     }
 
     public void practica5TresPuntosDeFuga() {
-        Figures3D figures = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures = new Figures(Figures.getCuboPrueba());
         figures.setTranslations(200, 200, 0);
         figures.setXAxisRotationAngle(25);
         figures.setYAxisRotationAngle(45);
@@ -80,15 +82,15 @@ public class Ventana extends JFrame{
     }
 
     public void practica6PuntosDeFuga() {
-        Figures3D figures1 = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures1 = new Figures(Figures.getCuboPrueba());
         figures1.setTranslations(20, 20, 0);
 
 
-        Figures3D figures2 = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures2 = new Figures(Figures.getCuboPrueba());
         figures2.setTranslations(280, 300, 0);
         figures2.setYAxisRotationAngle(45);
 
-        Figures3D figures3 = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures3 = new Figures(Figures.getCuboPrueba());
         figures3.setTranslations(400, 150, 0);
         figures3.setXAxisRotationAngle(25);
         figures3.setYAxisRotationAngle(45);
@@ -101,7 +103,7 @@ public class Ventana extends JFrame{
     }
 
     public void practica7Rotacion() {
-        Figures3D figures = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures = new Figures(Figures.getCuboPrueba());
         Graphics3D graphics = new Graphics3D(canvas);
         figures.setTranslations(200, 200, 0);
         for (int i = 0; i < 100; i++) {
@@ -117,8 +119,9 @@ public class Ventana extends JFrame{
             }
         }
     }
+
     public void practica8Traslacion() {
-        Figures3D figures = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures = new Figures(Figures.getCuboPrueba());
         Graphics3D graphics = new Graphics3D(canvas);
         for (int i = 0; i < 100; i++) {
             graphics.conicalProjection(figures.getFigure());
@@ -132,7 +135,7 @@ public class Ventana extends JFrame{
     }
 
     public void practica9Escalacion() {
-        Figures3D figures = new Figures3D(Figures3D.getCuboPrueba());
+        Figures figures = new Figures(Figures.getCuboPrueba());
         Graphics3D graphics = new Graphics3D(canvas);
         for (int i = 0; i < 100; i++) {
             graphics.conicalProjection(figures.getFigure());
