@@ -8,6 +8,8 @@ public class Figures3D {
     private Face[] faces;
     private double[] rotaionAngles = {0, 0, 0};
 
+    private boolean figureFilled = true;
+
     public Figures3D() {
 
     }
@@ -45,6 +47,17 @@ public class Figures3D {
 
     public void setScale(double scale) {
         this.scale *= scale;
+    }
+
+    public boolean isFigureFilled() {
+        return figureFilled;
+    }
+
+    public void setFigureFilled(boolean figureFilled) {
+        this.figureFilled = figureFilled;
+        for (int face = 0; face < faces.length; face++) {
+            faces[face].setFaceFilled(figureFilled);
+        }
     }
 
     private void xAxisRotation() {
@@ -257,7 +270,7 @@ public class Figures3D {
 
     public void createCube(int x, int y, int z, int large) {
         int points = 4;
-        int numFaces = 4;
+        int numFaces = 2;
         faces = new Face[numFaces];
         faces[0] = new Face(points);
         faces[0].setPoints(0, x - (large / 2), y - (large / 2), z - (large / 2));
@@ -271,7 +284,7 @@ public class Figures3D {
         faces[1].setPoints(3, x + (large / 2), y + (large / 2), z + (large / 2));
         faces[1].setPoints(2, x - (large / 2), y + (large / 2), z + (large / 2));
 
-        faces[2] = new Face(points);
+        /*faces[2] = new Face(points);
         faces[2].setPoints(0, x - (large / 2), y - (large / 2), z - (large / 2));
         faces[2].setPoints(1, x + (large / 2), y - (large / 2), z - (large / 2));
         faces[2].setPoints(2, x + (large / 2), y - (large / 2), z + (large / 2));
@@ -283,7 +296,7 @@ public class Figures3D {
         faces[3].setPoints(3, x + (large / 2), y + (large / 2), z + (large / 2));
         faces[3].setPoints(2, x - (large / 2), y + (large / 2), z + (large / 2));
 
-        /*faces[4] = new Face(points);
+        faces[4] = new Face(points);
         faces[4].setPoints(0, x - (large / 2), y - (large / 2), z - (large / 2));
         faces[4].setPoints(1, x - (large / 2), y - (large / 2), z + (large / 2));
         faces[4].setPoints(2, x - (large / 2), y + (large / 2), z + (large / 2));
@@ -294,7 +307,7 @@ public class Figures3D {
         faces[5].setPoints(0, x + (large / 2), y - (large / 2), z - (large / 2));
         faces[5].setPoints(1, x + (large / 2), y - (large / 2), z + (large / 2));
         faces[5].setPoints(2, x + (large / 2), y + (large / 2), z + (large / 2));
-        faces[5].setPoints(3, x + (large / 2), y + (large / 2), z - (large / 2));*/
+        faces[5].setPoints(3, x + (large / 2), y + (large / 2), z - (large / 2));/**/
         copyToOriginalFigure();
     }
 

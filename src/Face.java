@@ -8,6 +8,8 @@ public class Face {
     private Color color = Color.black;
     private Color fill = Color.blue;
 
+    private boolean faceFilled = true;
+
     public Face(int points) {
         vertices = new int[4][points];
         originalvertices = new int[4][points];
@@ -61,6 +63,14 @@ public class Face {
 
     public void setFill(Color fill) {
         this.fill = fill;
+    }
+
+    public boolean isFaceFilled() {
+        return faceFilled;
+    }
+
+    public void setFaceFilled(boolean faceFilled) {
+        this.faceFilled = faceFilled;
     }
 
     public void setPoints(int point, int x, int y, int z) {
