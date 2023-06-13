@@ -56,7 +56,6 @@ public class Graphics3D extends Graphics {
     }
 
     public void obliqueProjection(Face[] faces, int[] facesZIndex) {
-        repaintBackground();
         for (int face = 0; face < faces.length; face++) {
             int[][] figure = faces[facesZIndex[face]].getVertices();
             int[][] figureProjected = new int[figure.length][figure[0].length];
@@ -66,11 +65,9 @@ public class Graphics3D extends Graphics {
             }
             drawFigureProjected(faces, facesZIndex[face], figureProjected);
         }
-        update();
     }
 
     public void orthogonalProjection(Face[] faces, int[] facesZIndex) {
-        repaintBackground();
         for (int face = 0; face < faces.length; face++) {
             int[][] figure = faces[facesZIndex[face]].getVertices();
             int[][] figureProjected = new int[figure.length][figure[0].length];
@@ -78,23 +75,20 @@ public class Graphics3D extends Graphics {
                 figureProjected[0][i] = figure[0][i];
                 figureProjected[1][i] = figure[1][i];
             }
-            drawFigureProjected(faces, facesZIndex[face], figureProjected);
+            drawFigureProjected(faces,facesZIndex[face], figureProjected);
         }
-        update();
     }
 
-    public void conicalProjection(Face[] faces, double[] facesZIndex) {
-        repaintBackground();
+    public void conicalProjection(Face[] faces, int[] facesZIndex) {
         for (int face = faces.length - 1; face >= 0; face--) {
-            int[][] figure = faces[(int) facesZIndex[face]].getVertices();
+            int[][] figure = faces[facesZIndex[face]].getVertices();
             int[][] figureProjected = new int[figure.length][figure[0].length];
             for(int i = 0; i < figure[0].length; i++) {
                 figureProjected[0][i] = (int) Math.round(cameraPosition[0] + (figure[0][i] - cameraPosition[0]) * (-(cameraPosition[2] / (figure[2][i] - cameraPosition[2]))));
                 figureProjected[1][i] = (int) Math.round(cameraPosition[1] + (figure[1][i] - cameraPosition[1]) * (-(cameraPosition[2] / (figure[2][i] - cameraPosition[2]))));
             }
-            drawFigureProjected(faces, (int) facesZIndex[face], figureProjected);
+            drawFigureProjected(faces,facesZIndex[face], figureProjected);
         }
-        update();
     }
 
     private void drawFigureProjected(Face[] faces, int face, int[][] figureProjected) {

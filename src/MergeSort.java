@@ -1,7 +1,7 @@
 public class MergeSort {
-    private double facesZIndex[][];
+    private int facesZIndex[][];
 
-    public MergeSort(double[][] facesZIndex) {
+    public MergeSort(int[][] facesZIndex) {
         this.facesZIndex = facesZIndex;
     }
 
@@ -20,8 +20,8 @@ public class MergeSort {
         int index = izquierda;
         int lengthL = centro - izquierda + 1;
         int lengthR = derecha - centro;
-        double facesZIndexL[][] = new double[2][lengthL];
-        double facesZIndexR[][] = new double[2][lengthR];
+        int facesZIndexL[][] = new int[2][lengthL];
+        int facesZIndexR[][] = new int[2][lengthR];
 
         for (int i = 0; i < lengthL; i++) {
             facesZIndexL[0][i] = facesZIndex[0][izquierda + i];

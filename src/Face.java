@@ -9,7 +9,7 @@ public class Face {
     private double[] plainVector;
     private int[] cameraPoint = {0,0,0};
     private int[] centerFace = {0, 0, 0};
-    private double zIndex = 0;
+    private int zIndex = 0;
 
     public Face(int points, int[] cameraPoint) {
         this.cameraPoint = cameraPoint;
@@ -97,13 +97,13 @@ public class Face {
         return Arrays.copyOf(plainVector, plainVector.length);
     }
 
-    public double getZIndex() {
+    public int getZIndex() {
         return zIndex;
     }
 
     public void setZIndex() {
         int[] zVector = new int[3];
-        getCenter();
+        getCenter(false);
         for (int i = 0; i < zVector.length; i++) {
             zVector[i] = centerFace[i] - cameraPoint[i];
         }
@@ -126,7 +126,7 @@ public class Face {
         plainVector[2] = vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0];
     }
 
-    private void getCenter() {
+    private void getCenter(boolean returnCenter) {
         int maxX = vertices[0][0];
         int minX = vertices[0][0];
         int maxY = vertices[1][0];

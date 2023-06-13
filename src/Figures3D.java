@@ -6,9 +6,8 @@ public class Figures3D {
 
     private int dx = 0, dy = 0, dz = 0;
     private double scale = 1;
-    private int[][] figure, originalFigure;
+    private int[][] figure, originalFigure, facesZIndex;
     private Face[] faces;
-    private double[][] facesZIndex;
     private int[] cameraPoint = {0,0,1000};
     private double[] rotaionAngles = {0, 0, 0};
 
@@ -67,7 +66,7 @@ public class Figures3D {
         }
     }
 
-    public double[] getFacesZIndex() {
+    public int[] getFacesZIndex() {
         return Arrays.copyOf(facesZIndex[1], facesZIndex[1].length);
     }
 
@@ -270,7 +269,7 @@ public class Figures3D {
     public void createPlane(int x, int y, int z, int large) {
         int points = 4;
         int numFaces = 1;
-        facesZIndex = new double[2][numFaces];
+        facesZIndex = new int[2][numFaces];
         faces = new Face[numFaces];
 
         faces[0] = new Face(points, cameraPoint);
@@ -287,7 +286,7 @@ public class Figures3D {
     public void createCube(int x, int y, int z, int large) {
         int points = 4;
         int numFaces = 6;
-        facesZIndex = new double[2][numFaces];
+        facesZIndex = new int[2][numFaces];
         faces = new Face[numFaces];
 
         faces[0] = new Face(points, cameraPoint);
@@ -336,7 +335,7 @@ public class Figures3D {
     public void createPrism(int x, int y, int z, int width, int height, int depth) {
         int points = 4;
         int numFaces = 6;
-        facesZIndex = new double[2][numFaces];
+        facesZIndex = new int[2][numFaces];
         faces = new Face[numFaces];
 
         faces[0] = new Face(points, cameraPoint);
@@ -399,6 +398,20 @@ public class Figures3D {
         faces[faceIndex].setFill(fill);
     }
 
+    public void addFigure(Face[] newFaces) {
+        Face[] allFaces = new Face[newFaces.length + faces.length];
+        facesZIndex = new int[2][allFaces.length];
+        System.arraycopy(faces, 0, allFaces, 0, faces.length);
+        System.arraycopy(newFaces, 0, allFaces, faces.length, newFaces.length);
+        faces =  new Face[allFaces.length];
+        System.arraycopy(allFaces, 0, faces, 0, allFaces.length);
+        for (int face = 0; face < faces.length; face++) {
+            facesZIndex[0][face] = faces[face].getZIndex();
+            facesZIndex[1][face] = face;
+        }
+        copyToOriginalFigure();
+    }
+
     private void copyToOriginalFigure() {
         int figuresLenght = 0;
         int i = 0;
@@ -408,12 +421,12 @@ public class Figures3D {
         figure = new int[4][figuresLenght];
         originalFigure = new int[4][figuresLenght];
         for (int face = 0; face < faces.length; face++) {
-            int[][] originalVertices = faces[face].getOriginalVertices();
-            System.arraycopy(originalVertices[0], 0, originalFigure[0], i, originalVertices[0].length);
-            System.arraycopy(originalVertices[1], 0, originalFigure[1], i, originalVertices[1].length);
-            System.arraycopy(originalVertices[2], 0, originalFigure[2], i, originalVertices[2].length);
-            System.arraycopy(originalVertices[3], 0, originalFigure[3], i, originalVertices[3].length);
-            i += originalVertices[0].length;
+            int[][] vertices = faces[face].getVertices();
+            System.arraycopy(vertices[0], 0, originalFigure[0], i, vertices[0].length);
+            System.arraycopy(vertices[1], 0, originalFigure[1], i, vertices[1].length);
+            System.arraycopy(vertices[2], 0, originalFigure[2], i, vertices[2].length);
+            System.arraycopy(vertices[3], 0, originalFigure[3], i, vertices[3].length);
+            i += vertices[0].length;
         }
     }
 
