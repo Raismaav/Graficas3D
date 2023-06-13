@@ -7,6 +7,9 @@ public class Graphics3D extends Graphics {
     private Graphics2D graphics;
     private double[] projectionPlane = new double[] {10, 10, 50};
     private double[] cameraPosition, visionVector;
+    private Figures3D[] figures;
+    private int[][] figuresZIndex;
+
     public Graphics3D(JPanel canvas, Color background) {
         super(canvas, background);
         cameraPosition = new double[3];
@@ -55,39 +58,77 @@ public class Graphics3D extends Graphics {
         this.projectionPlane = projectionPlane;
     }
 
-    public void obliqueProjection(Face[] faces, int[] facesZIndex) {
-        for (int face = 0; face < faces.length; face++) {
-            int[][] figure = faces[facesZIndex[face]].getVertices();
-            int[][] figureProjected = new int[figure.length][figure[0].length];
-            for(int i = 0; i < figure[0].length; i++) {
-                figureProjected[0][i] = (int) Math.round(figure[0][i] + projectionPlane[0] * (-figure[2][i] / projectionPlane[2]));
-                figureProjected[1][i] = (int) Math.round(figure[1][i] + projectionPlane[1] * (-figure[2][i] / projectionPlane[2]));
-            }
-            drawFigureProjected(faces, facesZIndex[face], figureProjected);
+    public void addFigure(Figures3D figure) {
+        figure.setCameraPoint(getCanvas());
+        if (figures == null) {
+            figures = new Figures3D[1];
+            figuresZIndex = new int[2][1];
+            figures[0] = figure;
+            figuresZIndex[0][0] = figure.getZindex();
+            figuresZIndex[1][0] = 0;
+        } else {
+            Figures3D[] newFigures = new  Figures3D[figures.length + 1];
+            int[][] newZFiguresZIndex = new int[2][figures.length + 1];
+            System.arraycopy(figures, 0, newFigures, 0, figures.length);
+            newFigures[figures.length] = figure;
+            System.arraycopy(figuresZIndex[0], 0, newZFiguresZIndex[0], 0, figuresZIndex[0].length);
+            newZFiguresZIndex[0][figuresZIndex[0].length] = figure.getZindex();
+            System.arraycopy(figuresZIndex[1], 0, newZFiguresZIndex[1], 0, figuresZIndex[1].length);
+            newZFiguresZIndex[1][figuresZIndex[1].length] = figuresZIndex[1].length;
+            figures = new Figures3D[newFigures.length];
+            System.arraycopy(newFigures, 0, figures, 0, newFigures.length);
+            figuresZIndex = new int[2][newZFiguresZIndex[0].length];
+            System.arraycopy(newZFiguresZIndex[0], 0, figuresZIndex[0], 0, newZFiguresZIndex[0].length);
+            System.arraycopy(newZFiguresZIndex[1], 0, figuresZIndex[1], 0, newZFiguresZIndex[1].length);
         }
     }
 
-    public void orthogonalProjection(Face[] faces, int[] facesZIndex) {
-        for (int face = 0; face < faces.length; face++) {
-            int[][] figure = faces[facesZIndex[face]].getVertices();
-            int[][] figureProjected = new int[figure.length][figure[0].length];
-            for(int i = 0; i < figure[0].length; i++) {
-                figureProjected[0][i] = figure[0][i];
-                figureProjected[1][i] = figure[1][i];
+    public void obliqueProjection() {
+        setFiguresZIndex();
+        for (int figure = figures.length - 1; figure >= 0; figure--) {
+            Face[] faces = figures[figuresZIndex[1][figure]].getFigure();
+            int[] facesZIndex = figures[figuresZIndex[1][figure]].getFacesZIndex();
+            for (int face = 0; face < faces.length; face++) {
+                int[][] vertices = faces[facesZIndex[face]].getVertices();
+                int[][] figureProjected = new int[vertices.length][vertices[0].length];
+                for(int i = 0; i < vertices[0].length; i++) {
+                    figureProjected[0][i] = (int) Math.round(vertices[0][i] + projectionPlane[0] * (-vertices[2][i] / projectionPlane[2]));
+                    figureProjected[1][i] = (int) Math.round(vertices[1][i] + projectionPlane[1] * (-vertices[2][i] / projectionPlane[2]));
+                }
+                drawFigureProjected(faces, facesZIndex[face], figureProjected);
             }
-            drawFigureProjected(faces,facesZIndex[face], figureProjected);
         }
     }
 
-    public void conicalProjection(Face[] faces, int[] facesZIndex) {
-        for (int face = faces.length - 1; face >= 0; face--) {
-            int[][] figure = faces[facesZIndex[face]].getVertices();
-            int[][] figureProjected = new int[figure.length][figure[0].length];
-            for(int i = 0; i < figure[0].length; i++) {
-                figureProjected[0][i] = (int) Math.round(cameraPosition[0] + (figure[0][i] - cameraPosition[0]) * (-(cameraPosition[2] / (figure[2][i] - cameraPosition[2]))));
-                figureProjected[1][i] = (int) Math.round(cameraPosition[1] + (figure[1][i] - cameraPosition[1]) * (-(cameraPosition[2] / (figure[2][i] - cameraPosition[2]))));
+    public void orthogonalProjection() {
+        setFiguresZIndex();
+        for (int figure = figures.length - 1; figure >= 0; figure--) {
+            Face[] faces = figures[figuresZIndex[1][figure]].getFigure();
+            int[] facesZIndex = figures[figuresZIndex[1][figure]].getFacesZIndex();
+            for (int face = 0; face < faces.length; face++) {
+                int[][] vertices = faces[facesZIndex[face]].getVertices();
+                int[][] figureProjected = new int[vertices.length][vertices[0].length];
+                for(int i = 0; i < vertices[0].length; i++) {
+                }
+                drawFigureProjected(faces,facesZIndex[face], figureProjected);
             }
-            drawFigureProjected(faces,facesZIndex[face], figureProjected);
+        }
+    }
+
+    public void conicalProjection() {
+        setFiguresZIndex();
+        for (int figure = figures.length - 1; figure >= 0; figure--) {
+            Face[] faces = figures[figuresZIndex[1][figure]].getFigure();
+            int[] facesZIndex = figures[figuresZIndex[1][figure]].getFacesZIndex();
+            for (int face = faces.length - 1; face >= 0; face--) {
+                int[][] vertices = faces[facesZIndex[face]].getVertices();
+                int[][] figureProjected = new int[vertices.length][vertices[0].length];
+                for(int i = 0; i < vertices[0].length; i++) {
+                    figureProjected[0][i] = (int) Math.round(cameraPosition[0] + (vertices[0][i] - cameraPosition[0]) * (-(cameraPosition[2] / (vertices[2][i] - cameraPosition[2]))));
+                    figureProjected[1][i] = (int) Math.round(cameraPosition[1] + (vertices[1][i] - cameraPosition[1]) * (-(cameraPosition[2] / (vertices[2][i] - cameraPosition[2]))));
+                }
+                drawFigureProjected(faces,facesZIndex[face], figureProjected);
+            }
         }
     }
 
@@ -170,7 +211,12 @@ public class Graphics3D extends Graphics {
         }
     }
 
-    private void sortZIndex() {
-
+    private void setFiguresZIndex() {
+        for (int figure = figures.length - 1; figure >= 0; figure--) {
+            figuresZIndex[0][figure] = figures[figure].getZindex();
+            figuresZIndex[1][figure] = figure;
+        }
+        MergeSort mergeSort = new MergeSort(figuresZIndex);
+        mergeSort.sort(0, figuresZIndex[0].length - 1);
     }
 }

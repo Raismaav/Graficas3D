@@ -5,16 +5,16 @@ public class MergeSort {
         this.facesZIndex = facesZIndex;
     }
 
-    public void ordenar(int izquierda, int derecha) {
+    public void sort(int izquierda, int derecha) {
         if (izquierda < derecha) {
             int centro = (izquierda + derecha) / 2;
-            ordenar(izquierda, centro);
-            ordenar(centro + 1, derecha);
-            unir(izquierda, centro, derecha);
+            sort(izquierda, centro);
+            sort(centro + 1, derecha);
+            merge(izquierda, centro, derecha);
         }
     }
 
-    private void unir(int izquierda, int centro, int derecha) {
+    private void merge(int izquierda, int centro, int derecha) {
         int indexL = 0;
         int indexR = 0;
         int index = izquierda;
