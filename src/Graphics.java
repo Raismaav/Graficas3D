@@ -32,6 +32,14 @@ public class Graphics {
         canvas.getGraphics().drawImage(buffer, 0, 0, canvas);
     }
 
+    public JPanel getCanvas() {
+        return canvas;
+    }
+
+    public void setCanvas(JPanel canvas) {
+        this.canvas = canvas;
+    }
+
     public void drawPoint(int x, int y, Color color) {
         drawPixel(x, y, color);
         canvas.getGraphics().drawImage(buffer, 0, 0, canvas);
@@ -138,27 +146,18 @@ public class Graphics {
         }
     }
 
-    protected void scanLineFill(int x, int y, int c, Color fill) {
-        if(x < 0) {
-            x = buffer.getWidth() - 1;
-        } else if(x >= buffer.getWidth()) {
-            x = 0;
-        }
-
-        if(y < 0) {
-            y = buffer.getHeight() - 1;
-        } else if(y >= buffer.getHeight()) {
-            y = 0;
-        }
-
-        int pc =  buffer.getRGB(x,y);
-
-        if(pc == c) {
+    protected void scanLineFill(int x, int y, int targetColor, Color fill) {
+        if(x < 0 && x >= buffer.getWidth())
+            return;
+        if(y < 0 && y >= buffer.getHeight())
+            return;
+        int pixelColor =  buffer.getRGB(x,y);
+        if(pixelColor == targetColor) {
             drawPixel(x, y, fill);
-            scanLineFill(x + 1, y, c, fill);
-            scanLineFill(x - 1, y, c, fill);
-            scanLineFill(x, y - 1, c, fill);
-            scanLineFill(x, y + 1, c, fill);
+            scanLineFill(x + 1, y, targetColor, fill);
+            scanLineFill(x - 1, y, targetColor, fill);
+            scanLineFill(x, y - 1, targetColor, fill);
+            scanLineFill(x, y + 1, targetColor, fill);
         }
     }
 }

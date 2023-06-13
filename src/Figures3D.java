@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 
 public class Figures3D {
@@ -6,15 +8,19 @@ public class Figures3D {
     private double scale = 1;
     private int[][] figure, originalFigure;
     private Face[] faces;
+    private double[][] facesZIndex;
+    private int[] cameraPoint = {0,0,1000};
     private double[] rotaionAngles = {0, 0, 0};
 
     private boolean figureFilled = true;
 
-    public Figures3D() {
-
+    public Figures3D(JPanel canvas) {
+        cameraPoint[0] = canvas.getWidth() / 2;
+        cameraPoint[1] = canvas.getHeight() / 2;
     }
 
     public Face[] getFigure() {
+        MergeSort mergeSort = new MergeSort(facesZIndex);
         for (int j = 0; j < this.figure.length; j++) {
             this.figure[j] = Arrays.copyOf(this.originalFigure[j], this.figure[j].length);
         }
@@ -24,6 +30,7 @@ public class Figures3D {
         translation();
         escalation();
         copyToVertices();
+        mergeSort.ordenar(0, facesZIndex[0].length - 1);
         return Arrays.copyOf(faces, faces.length);
     }
 
@@ -58,6 +65,10 @@ public class Figures3D {
         for (int face = 0; face < faces.length; face++) {
             faces[face].setFaceFilled(figureFilled);
         }
+    }
+
+    public double[] getFacesZIndex() {
+        return Arrays.copyOf(facesZIndex[1], facesZIndex[1].length);
     }
 
     private void xAxisRotation() {
@@ -259,56 +270,133 @@ public class Figures3D {
     public void createPlane(int x, int y, int z, int large) {
         int points = 4;
         int numFaces = 1;
+        facesZIndex = new double[2][numFaces];
         faces = new Face[numFaces];
-        faces[0] = new Face(points);
+
+        faces[0] = new Face(points, cameraPoint);
         faces[0].setPoints(0, x - (large / 2), y - (large / 2), z);
         faces[0].setPoints(1, x + (large / 2), y - (large / 2), z);
         faces[0].setPoints(2, x + (large / 2), y + (large / 2), z);
         faces[0].setPoints(3, x - (large / 2), y + (large / 2), z);
+        facesZIndex[0][0] = faces[0].getZIndex();
+        facesZIndex[1][0] = 0;
+
         copyToOriginalFigure();
     }
 
     public void createCube(int x, int y, int z, int large) {
         int points = 4;
-        int numFaces = 2;
+        int numFaces = 6;
+        facesZIndex = new double[2][numFaces];
         faces = new Face[numFaces];
-        faces[0] = new Face(points);
+
+        faces[0] = new Face(points, cameraPoint);
         faces[0].setPoints(0, x - (large / 2), y - (large / 2), z - (large / 2));
         faces[0].setPoints(1, x + (large / 2), y - (large / 2), z - (large / 2));
         faces[0].setPoints(2, x + (large / 2), y + (large / 2), z - (large / 2));
         faces[0].setPoints(3, x - (large / 2), y + (large / 2), z - (large / 2));
 
-        faces[1] = new Face(points);
+        faces[1] = new Face(points, cameraPoint);
         faces[1].setPoints(1, x - (large / 2), y - (large / 2), z + (large / 2));
         faces[1].setPoints(0, x + (large / 2), y - (large / 2), z + (large / 2));
         faces[1].setPoints(3, x + (large / 2), y + (large / 2), z + (large / 2));
         faces[1].setPoints(2, x - (large / 2), y + (large / 2), z + (large / 2));
 
-        /*faces[2] = new Face(points);
+        faces[2] = new Face(points, cameraPoint);
         faces[2].setPoints(0, x - (large / 2), y - (large / 2), z - (large / 2));
         faces[2].setPoints(1, x + (large / 2), y - (large / 2), z - (large / 2));
         faces[2].setPoints(2, x + (large / 2), y - (large / 2), z + (large / 2));
         faces[2].setPoints(3, x - (large / 2), y - (large / 2), z + (large / 2));
 
-        faces[3] = new Face(points);
+        faces[3] = new Face(points, cameraPoint);
         faces[3].setPoints(1, x - (large / 2), y + (large / 2), z - (large / 2));
         faces[3].setPoints(0, x + (large / 2), y + (large / 2), z - (large / 2));
         faces[3].setPoints(3, x + (large / 2), y + (large / 2), z + (large / 2));
         faces[3].setPoints(2, x - (large / 2), y + (large / 2), z + (large / 2));
 
-        faces[4] = new Face(points);
+        faces[4] = new Face(points, cameraPoint);
         faces[4].setPoints(0, x - (large / 2), y - (large / 2), z - (large / 2));
         faces[4].setPoints(1, x - (large / 2), y - (large / 2), z + (large / 2));
         faces[4].setPoints(2, x - (large / 2), y + (large / 2), z + (large / 2));
         faces[4].setPoints(3, x - (large / 2), y + (large / 2), z - (large / 2));
 
-
-        faces[5] = new Face(points);
+        faces[5] = new Face(points, cameraPoint);
         faces[5].setPoints(0, x + (large / 2), y - (large / 2), z - (large / 2));
         faces[5].setPoints(1, x + (large / 2), y - (large / 2), z + (large / 2));
         faces[5].setPoints(2, x + (large / 2), y + (large / 2), z + (large / 2));
         faces[5].setPoints(3, x + (large / 2), y + (large / 2), z - (large / 2));/**/
+
+        for (int face = 0; face < faces.length; face++) {
+            facesZIndex[0][face] = faces[face].getZIndex();
+            facesZIndex[1][face] = face;
+        }
         copyToOriginalFigure();
+    }
+
+    public void createPrism(int x, int y, int z, int width, int height, int depth) {
+        int points = 4;
+        int numFaces = 6;
+        facesZIndex = new double[2][numFaces];
+        faces = new Face[numFaces];
+
+        faces[0] = new Face(points, cameraPoint);
+        faces[0].setPoints(0, x - (width / 2), y - (height / 2), z - (depth / 2));
+        faces[0].setPoints(1, x + (width / 2), y - (height / 2), z - (depth / 2));
+        faces[0].setPoints(2, x + (width / 2), y + (height / 2), z - (depth / 2));
+        faces[0].setPoints(3, x - (width / 2), y + (height / 2), z - (depth / 2));
+
+        faces[1] = new Face(points, cameraPoint);
+        faces[1].setPoints(1, x - (width / 2), y - (height / 2), z + (depth / 2));
+        faces[1].setPoints(0, x + (width / 2), y - (height / 2), z + (depth / 2));
+        faces[1].setPoints(3, x + (width / 2), y + (height / 2), z + (depth / 2));
+        faces[1].setPoints(2, x - (width / 2), y + (height / 2), z + (depth / 2));
+
+        faces[2] = new Face(points, cameraPoint);
+        faces[2].setPoints(0, x - (width / 2), y - (height / 2), z - (depth / 2));
+        faces[2].setPoints(1, x + (width / 2), y - (height / 2), z - (depth / 2));
+        faces[2].setPoints(2, x + (width / 2), y - (height / 2), z + (depth / 2));
+        faces[2].setPoints(3, x - (width / 2), y - (height / 2), z + (depth / 2));
+
+        faces[3] = new Face(points, cameraPoint);
+        faces[3].setPoints(1, x - (width / 2), y + (height / 2), z - (depth / 2));
+        faces[3].setPoints(0, x + (width / 2), y + (height / 2), z - (depth / 2));
+        faces[3].setPoints(3, x + (width / 2), y + (height / 2), z + (depth / 2));
+        faces[3].setPoints(2, x - (width / 2), y + (height / 2), z + (depth / 2));
+
+        faces[4] = new Face(points, cameraPoint);
+        faces[4].setPoints(0, x - (width / 2), y - (height / 2), z - (depth / 2));
+        faces[4].setPoints(1, x - (width / 2), y - (height / 2), z + (depth / 2));
+        faces[4].setPoints(2, x - (width / 2), y + (height / 2), z + (depth / 2));
+        faces[4].setPoints(3, x - (width / 2), y + (height / 2), z - (depth / 2));
+
+        faces[5] = new Face(points, cameraPoint);
+        faces[5].setPoints(0, x + (width / 2), y - (height / 2), z - (depth / 2));
+        faces[5].setPoints(1, x + (width / 2), y - (height / 2), z + (depth / 2));
+        faces[5].setPoints(2, x + (width / 2), y + (height / 2), z + (depth / 2));
+        faces[5].setPoints(3, x + (width / 2), y + (height / 2), z - (depth / 2));/**/
+
+        for (int face = 0; face < faces.length; face++) {
+            facesZIndex[0][face] = faces[face].getZIndex();
+            facesZIndex[1][face] = face;
+        }
+        copyToOriginalFigure();
+    }
+
+    public void setColorsFace(Color color, Color fill, int faceIndex) {
+        faces[faceIndex].setColor(color);
+        faces[faceIndex].setFill(fill);
+    }
+
+    public void setColorsFace(Color color, int faceIndex) {
+        faces[faceIndex].setColor(color);
+        faces[faceIndex].setFill(color);
+    }
+    public void setColorFace(Color color, int faceIndex) {
+        faces[faceIndex].setColor(color);
+    }
+
+    public void setFillFace(Color fill, int faceIndex) {
+        faces[faceIndex].setFill(fill);
     }
 
     private void copyToOriginalFigure() {
@@ -338,7 +426,19 @@ public class Figures3D {
             System.arraycopy(figure[2], i, vertices[2], 0, vertices[2].length);
             System.arraycopy(figure[3], i, vertices[3], 0, vertices[3].length);
             faces[face].setVertices(vertices);
+            facesZIndex[0][face] = faces[face].getZIndex();
+            facesZIndex[1][face] = face;
             i += faces[0].getPoints();
         }
+    }
+
+    private String imprimirZIndex() {
+        String zIndexString = "";
+        String indexString = "";
+        for (int i = 0; i < facesZIndex[0].length; ++i) {
+            zIndexString = zIndexString + facesZIndex[0][i] + " ";
+            indexString = indexString + facesZIndex[1][i] + " ";
+        }
+        return zIndexString + "\n" + indexString;
     }
 }

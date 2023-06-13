@@ -21,19 +21,26 @@ public class Ventana extends JFrame{
     }
 
     public void paint() {
-        Figures3D figura1 = new Figures3D();
-        figura1.createCube(200, 200, -100, 100);
-        figura1.setFigureFilled(true);
         Graphics3D graphics3D = new Graphics3D(canvas);
+        Figures3D figura1 = new Figures3D(graphics3D.getCanvas());
+        figura1.createPrism(200, 200, -300, 100, 20, 56);
+        figura1.setFillFace(Color.white, 0);
+        figura1.setFillFace(Color.yellow, 1);
+        figura1.setFillFace(Color.red, 2);
+        figura1.setFillFace(Color.orange, 3);
+        figura1.setFillFace(Color.green, 4);
+        figura1.setFillFace(Color.blue, 5);
+        figura1.setFigureFilled(true);
         for (int i = 0; i < 1000; i++) {
-            graphics3D.conicalProjection(figura1.getFigure());
+            graphics3D.conicalProjection(figura1.getFigure(), figura1.getFacesZIndex());
+            figura1.setTranslations(2, 0, 0);
             figura1.setXAxisRotationAngle(2);
-            figura1.setYAxisRotationAngle(0);
-            figura1.setZAxisRotationAngle(0);
+            figura1.setYAxisRotationAngle(3);
+            figura1.setZAxisRotationAngle(4);
             //figura1.setTranslations(1,0,-10);
             //figura1.setScale(1.01);
             try {
-                Thread.sleep(500);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
