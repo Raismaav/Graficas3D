@@ -59,7 +59,6 @@ public class Graphics3D extends Graphics {
     }
 
     public void addFigure(Figures3D figure) {
-        figure.setCameraPoint(getCanvas());
         if (figures == null) {
             figures = new Figures3D[1];
             figuresZIndex = new int[2][1];

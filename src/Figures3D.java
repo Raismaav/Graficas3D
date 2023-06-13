@@ -12,7 +12,9 @@ public class Figures3D {
     private double[] rotaionAngles = {0, 0, 0};
     private boolean figureFilled = true;
 
-    public Figures3D() {
+    public Figures3D(JPanel canvas) {
+        cameraPoint[0] = canvas.getWidth() / 2;
+        cameraPoint[1] = canvas.getHeight() / 2;
     }
 
     public Face[] getFigure() {
