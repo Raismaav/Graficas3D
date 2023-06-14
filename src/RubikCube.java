@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class RubikCube {
+public class RubikCube extends Thread {
     private JPanel canvas;
     private Graphics3D graphics3D;
 
@@ -11,42 +11,21 @@ public class RubikCube {
             cornerWRG, cornerWOG, cornerWRB, cornerWOB,
             cornerYRG, cornerYOG, cornerYRB, cornerYOB;
 
+    private RubikFace white, yellow, red, orange, green, blue;
+
     public RubikCube(JPanel canvas) {
         this.canvas = canvas;
         graphics3D = new Graphics3D(canvas);
-        //setCube();
-        paint();
+        setCube();
+        setCubeFaces();
+        setCubeFaces();
     }
 
-    public void paint() {
-        core = new Figures3D(graphics3D.getCanvas());
-        core.createCube(canvas.getWidth() / 2, canvas.getHeight() / 2, -400, 100);
-
-        centerW = new Figures3D(graphics3D.getCanvas());
-        centerW.createCube(canvas.getWidth() / 2, canvas.getHeight() / 2, -500, 100);
-        centerW.setFillFace(Color.white, 0);
-        centerW.setAnchorFigure(core);
-
-        centerR = new Figures3D(graphics3D.getCanvas());
-        centerR.createCube(canvas.getWidth() / 2, (canvas.getHeight() / 2) - 100, -400, 100);
-        centerR.setFillFace(Color.red, 2);
-        centerR.setAnchorFigure(core);
-
-        graphics3D.addFigure(core);
-        graphics3D.addFigure(centerW);
-        graphics3D.addFigure(centerR);
-        centerW.setPriorityAxis(Figures3D.Z_AXIS_PRIORITY);
-        centerR.setPriorityAxis(Figures3D.Y_AXIS_PRIORITY);
-
-        for (int i = 0; i < 1000; i++) {
+    public void run() {
+        while (true) {
             graphics3D.repaintBackground();
             graphics3D.conicalProjection();
             graphics3D.update();
-            core.setXAxisRotationAngle(2, false);
-            core.setYAxisRotationAngle(2, false);
-            core.setYAxisRotationAngle(2, false);
-            centerW.setZAxisRotationAngle(4, false);
-            centerR.setYAxisRotationAngle(3, false);
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
@@ -55,32 +34,140 @@ public class RubikCube {
         }
     }
 
+    public void spinWhite() {
+        white.spin(-1);
+    }
+
+    public void spinYellow() {
+        yellow.spin(1);
+    }
+
+    public void spinRed() {
+        red.spin(-1);
+    }
+
+    public void spinOrange() {
+        orange.spin(1);
+    }
+
+    public void spinGreen() {
+        green.spin(-1);
+    }
+
+    public void spinBlue() {
+        blue.spin(1);
+    }
+
+    public void setXAxisRotationAngle(double angle) {
+        aristWR.setAnchorFigure(core);
+        aristWO.setAnchorFigure(core);
+        aristWG.setAnchorFigure(core);
+        aristWB.setAnchorFigure(core);
+        aristRG.setAnchorFigure(core);
+        aristRB.setAnchorFigure(core);
+        aristOG.setAnchorFigure(core);
+        aristOB.setAnchorFigure(core);
+        aristYR.setAnchorFigure(core);
+        aristYO.setAnchorFigure(core);
+        aristYG.setAnchorFigure(core);
+        aristYB.setAnchorFigure(core);
+        cornerWRG.setAnchorFigure(core);
+        cornerWOG.setAnchorFigure(core);
+        cornerWRB.setAnchorFigure(core);
+        cornerWOB.setAnchorFigure(core);
+        cornerYRG.setAnchorFigure(core);
+        cornerYOG.setAnchorFigure(core);
+        cornerYRB.setAnchorFigure(core);
+        cornerYOB.setAnchorFigure(core);
+        core.setXAxisRotationAngle(angle, false);
+    }
+
+    public void setYAxisRotationAngle(double angle) {
+        aristWR.setAnchorFigure(core);
+        aristWO.setAnchorFigure(core);
+        aristWG.setAnchorFigure(core);
+        aristWB.setAnchorFigure(core);
+        aristRG.setAnchorFigure(core);
+        aristRB.setAnchorFigure(core);
+        aristOG.setAnchorFigure(core);
+        aristOB.setAnchorFigure(core);
+        aristYR.setAnchorFigure(core);
+        aristYO.setAnchorFigure(core);
+        aristYG.setAnchorFigure(core);
+        aristYB.setAnchorFigure(core);
+        cornerWRG.setAnchorFigure(core);
+        cornerWOG.setAnchorFigure(core);
+        cornerWRB.setAnchorFigure(core);
+        cornerWOB.setAnchorFigure(core);
+        cornerYRG.setAnchorFigure(core);
+        cornerYOG.setAnchorFigure(core);
+        cornerYRB.setAnchorFigure(core);
+        cornerYOB.setAnchorFigure(core);
+        core.setYAxisRotationAngle(angle, false);
+    }
+
+    public void setZAxisRotationAngle(double angle) {
+        aristWR.setAnchorFigure(core);
+        aristWO.setAnchorFigure(core);
+        aristWG.setAnchorFigure(core);
+        aristWB.setAnchorFigure(core);
+        aristRG.setAnchorFigure(core);
+        aristRB.setAnchorFigure(core);
+        aristOG.setAnchorFigure(core);
+        aristOB.setAnchorFigure(core);
+        aristYR.setAnchorFigure(core);
+        aristYO.setAnchorFigure(core);
+        aristYG.setAnchorFigure(core);
+        aristYB.setAnchorFigure(core);
+        cornerWRG.setAnchorFigure(core);
+        cornerWOG.setAnchorFigure(core);
+        cornerWRB.setAnchorFigure(core);
+        cornerWOB.setAnchorFigure(core);
+        cornerYRG.setAnchorFigure(core);
+        cornerYOG.setAnchorFigure(core);
+        cornerYRB.setAnchorFigure(core);
+        cornerYOB.setAnchorFigure(core);
+        core.setZAxisRotationAngle(angle, false);
+    }
+
     private void setCube() {
         core = new Figures3D(graphics3D.getCanvas());
         core.createCube(canvas.getWidth() / 2, canvas.getHeight() / 2, -400, 100);
 
         centerW = new Figures3D(graphics3D.getCanvas());
         centerW.createCube(canvas.getWidth() / 2, canvas.getHeight() / 2, -500, 100);
+        centerW.setPriorityAxis(Figures3D.Z_AXIS_PRIORITY);
+        centerW.setAnchorFigure(core);
         centerW.setFillFace(Color.white, 0);
 
         centerY = new Figures3D(graphics3D.getCanvas());
         centerY.createCube(canvas.getWidth() / 2, canvas.getHeight() / 2, -300, 100);
+        centerY.setPriorityAxis(Figures3D.Z_AXIS_PRIORITY);
+        centerY.setAnchorFigure(core);
         centerY.setFillFace(Color.yellow, 1);
 
         centerR = new Figures3D(graphics3D.getCanvas());
         centerR.createCube(canvas.getWidth() / 2, (canvas.getHeight() / 2) - 100, -400, 100);
+        centerR.setPriorityAxis(Figures3D.Y_AXIS_PRIORITY);
+        centerR.setAnchorFigure(core);
         centerR.setFillFace(Color.red, 2);
 
         centerO = new Figures3D(graphics3D.getCanvas());
         centerO.createCube(canvas.getWidth() / 2, (canvas.getHeight() / 2) + 100, -400, 100);
+        centerO.setPriorityAxis(Figures3D.Y_AXIS_PRIORITY);
+        centerO.setAnchorFigure(core);
         centerO.setFillFace(Color.orange, 3);
 
         centerG = new Figures3D(graphics3D.getCanvas());
         centerG.createCube((canvas.getWidth() / 2) - 100, canvas.getHeight() / 2, -400, 100);
+        centerG.setPriorityAxis(Figures3D.X_AXIS_PRIORITY);
+        centerG.setAnchorFigure(core);
         centerG.setFillFace(Color.green, 4);
 
         centerB = new Figures3D(graphics3D.getCanvas());
         centerB.createCube((canvas.getWidth() / 2) + 100, canvas.getHeight() / 2, -400, 100);
+        centerB.setPriorityAxis(Figures3D.X_AXIS_PRIORITY);
+        centerB.setAnchorFigure(core);
         centerB.setFillFace(Color.blue, 5);
 
         aristWR = new Figures3D(graphics3D.getCanvas());
@@ -217,6 +304,39 @@ public class RubikCube {
         graphics3D.addFigure(cornerYRG);
         graphics3D.addFigure(cornerYOG);
         graphics3D.addFigure(cornerYRB);
-        graphics3D.addFigure(cornerYOB);
+        graphics3D.addFigure(cornerYOB);/**/
+    }
+
+    private void setCubeFaces() {
+        yellow = new RubikFace(centerY);
+        yellow.setUpNeighborFace(red, NeighborFace.DOWN, cornerYRG, aristYR, cornerYRB);
+        yellow.setRightNeighborFace(blue, NeighborFace.LEFT, cornerYRB, aristYB, cornerYOB);
+        yellow.setDownNeighborFace(orange, NeighborFace.UP, cornerYOG, aristYO, cornerYOB);
+        yellow.setLeftNeighborFace(green, NeighborFace.RIGHT, cornerYRG, aristYG, cornerYOG);
+        red = new RubikFace(centerR);
+        red.setUpNeighborFace(white, NeighborFace.DOWN, cornerWRG, aristWR, cornerWRB);
+        red.setRightNeighborFace(blue, NeighborFace.UP, cornerWRB, aristRB, cornerYRB);
+        red.setDownNeighborFace(yellow, NeighborFace.UP, cornerYRG, aristYR, cornerYRB);
+        red.setLeftNeighborFace(green, NeighborFace.UP, cornerWRG, aristRG, cornerYRG);
+        white = new RubikFace(centerW);
+        white.setUpNeighborFace(orange, NeighborFace.DOWN, cornerWOG, aristWO, cornerWOB);
+        white.setRightNeighborFace(blue, NeighborFace.RIGHT, cornerWOB, aristWB, cornerWRB);
+        white.setDownNeighborFace(red, NeighborFace.UP, cornerWRG, aristWR, cornerWRB);
+        white.setLeftNeighborFace(green, NeighborFace.LEFT, cornerWOG, aristWG, cornerWRG);
+        orange = new RubikFace(centerO);
+        orange.setUpNeighborFace(yellow, NeighborFace.DOWN, cornerYOG, aristYO, cornerYOB);
+        orange.setRightNeighborFace(blue, NeighborFace.DOWN, cornerYOB, aristOB, cornerWOB);
+        orange.setDownNeighborFace(white, NeighborFace.UP, cornerWOG, aristWO, cornerWOB);
+        orange.setLeftNeighborFace(green, NeighborFace.DOWN, cornerYOG, aristOG, cornerWOG);
+        green = new RubikFace(centerG);
+        green.setUpNeighborFace(red, NeighborFace.LEFT, cornerWRG, aristRG, cornerYRG);
+        green.setRightNeighborFace(yellow, NeighborFace.LEFT, cornerYRG, aristYG, cornerYOG);
+        green.setDownNeighborFace(orange, NeighborFace.LEFT, cornerWOG, aristOG, cornerYOG);
+        green.setLeftNeighborFace(white, NeighborFace.LEFT, cornerWRG, aristWG, cornerWOG);
+        blue = new RubikFace(centerB);
+        blue.setUpNeighborFace(red, NeighborFace.RIGHT, cornerYRB, aristRB, cornerWRB);
+        blue.setRightNeighborFace(white, NeighborFace.RIGHT, cornerWRB, aristWB, cornerWOB);
+        blue.setDownNeighborFace(orange, NeighborFace.RIGHT, cornerYOB, aristOB, cornerWOB);
+        blue.setLeftNeighborFace(yellow, NeighborFace.RIGHT, cornerYRB, aristYB, cornerYOB);
     }
 }
