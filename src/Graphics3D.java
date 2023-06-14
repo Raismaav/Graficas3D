@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class Graphics3D extends Graphics {
     private Graphics2D graphics;
-    private double[] projectionPlane = new double[] {10, 10, 50};
+    private BufferedImage bufferedFace;
     private double[] cameraPosition, visionVector;
     private Figures3D[] figures;
     private int[][] figuresZIndex;
@@ -49,14 +49,6 @@ public class Graphics3D extends Graphics {
         visionVector[2] = vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0];
     }
 
-    public double[] getProjectionPlane() {
-        return projectionPlane;
-    }
-
-    public void setProjectionPlane(double[] projectionPlane) {
-        this.projectionPlane = projectionPlane;
-    }
-
     public void addFigure(Figures3D figure) {
         if (figures == null) {
             figures = new Figures3D[1];
@@ -90,10 +82,10 @@ public class Graphics3D extends Graphics {
                 int[][] vertices = faces[facesZIndex[face]].getVertices();
                 int[][] figureProjected = new int[vertices.length][vertices[0].length];
                 for(int i = 0; i < vertices[0].length; i++) {
-                    figureProjected[0][i] = (int) Math.round(vertices[0][i] + projectionPlane[0] * (-vertices[2][i] / projectionPlane[2]));
-                    figureProjected[1][i] = (int) Math.round(vertices[1][i] + projectionPlane[1] * (-vertices[2][i] / projectionPlane[2]));
+                    figureProjected[0][i] = (int) Math.round(vertices[0][i] + cameraPosition[0] * (-vertices[2][i] / cameraPosition[2]));
+                    figureProjected[1][i] = (int) Math.round(vertices[1][i] + cameraPosition[1] * (-vertices[2][i] / cameraPosition[2]));
                 }
-                drawFigureProjected(faces, facesZIndex[face], figureProjected);
+                drawFigureProjected(faces, facesZIndex[face], figureProjected, false);
             }
         }
     }
@@ -108,7 +100,7 @@ public class Graphics3D extends Graphics {
                 int[][] figureProjected = new int[vertices.length][vertices[0].length];
                 for(int i = 0; i < vertices[0].length; i++) {
                 }
-                drawFigureProjected(faces,facesZIndex[face], figureProjected);
+                drawFigureProjected(faces,facesZIndex[face], figureProjected, false);
             }
         }
     }
@@ -125,17 +117,28 @@ public class Graphics3D extends Graphics {
                     figureProjected[0][i] = (int) Math.round(cameraPosition[0] + (vertices[0][i] - cameraPosition[0]) * (-(cameraPosition[2] / (vertices[2][i] - cameraPosition[2]))));
                     figureProjected[1][i] = (int) Math.round(cameraPosition[1] + (vertices[1][i] - cameraPosition[1]) * (-(cameraPosition[2] / (vertices[2][i] - cameraPosition[2]))));
                 }
-                drawFigureProjected(faces,facesZIndex[face], figureProjected);
+                drawFigureProjected(faces,facesZIndex[face], figureProjected, false);
             }
         }
     }
 
-    private void drawFigureProjected(Face[] faces, int face, int[][] figureProjected) {
-        if (faces[face].isFaceFilled())
-            fillFace(figureProjected, faces[face].getFill());
-        drawLine(figureProjected[0][figureProjected[0].length - 1], figureProjected[1][figureProjected[0].length - 1], figureProjected[0][0], figureProjected[1][0], faces[face].getColor());
-        for(int i = 1; i < figureProjected[0].length; i++) {
-            drawLine(figureProjected[0][i - 1], figureProjected[1][i - 1], figureProjected[0][i], figureProjected[1][i], faces[face].getColor());
+    private void drawFigureProjected(Face[] faces, int face, int[][] figureProjected, boolean useBufferedFace) {
+        if(useBufferedFace) {
+            bufferedFace = new BufferedImage(buffer.getWidth(), buffer.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            if (faces[face].isFaceFilled())
+                fillFace(figureProjected, faces[face].getFill(), bufferedFace);
+            drawLine(figureProjected[0][figureProjected[0].length - 1], figureProjected[1][figureProjected[0].length - 1], figureProjected[0][0], figureProjected[1][0], faces[face].getColor(), bufferedFace);
+            for(int i = 1; i < figureProjected[0].length; i++) {
+                drawLine(figureProjected[0][i - 1], figureProjected[1][i - 1], figureProjected[0][i], figureProjected[1][i], faces[face].getColor(), bufferedFace);
+            }
+            drawAuxbuffer(bufferedFace);
+        } else {
+            if (faces[face].isFaceFilled())
+                fillFace(figureProjected, faces[face].getFill());
+            drawLine(figureProjected[0][figureProjected[0].length - 1], figureProjected[1][figureProjected[0].length - 1], figureProjected[0][0], figureProjected[1][0], faces[face].getColor());
+            for(int i = 1; i < figureProjected[0].length; i++) {
+                drawLine(figureProjected[0][i - 1], figureProjected[1][i - 1], figureProjected[0][i], figureProjected[1][i], faces[face].getColor());
+            }
         }
     }
 
@@ -149,6 +152,12 @@ public class Graphics3D extends Graphics {
         }
         else
             return false;
+    }
+
+    private void fillFace(int[][] figureProjected, Color fill, BufferedImage auxBuffer) {
+        graphics = (Graphics2D) auxBuffer.createGraphics();
+        graphics.setColor(fill);
+        graphics.fillPolygon(figureProjected[0], figureProjected[1], figureProjected[0].length);
     }
 
     private void fillFace(int[][] figureProjected, Color fill) {
