@@ -3,13 +3,13 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class Figures3D {
-
-    private int dx = 0, dy = 0, dz = 0, zindex = 0;
+    public static final int X_AXIS_PRIORITY = 0, Y_AXIS_PRIORITY = 1, Z_AXIS_PRIORITY = 2;
+    private int dx = 0, dy = 0, dz = 0, zindex = 0, priorityAxis = 0, priorityTranslationAxis = 0;
     private double scale = 1;
     private int[][] figure, originalFigure, facesZIndex;
     private Face[] faces;
-    private int[] cameraPoint = {0,0,1000};
-    private double[] rotaionAngles = {0, 0, 0};
+    private int[] cameraPoint = {0,0,1000}, centerFigure = new int[3], centerAxialTranslation = new int[3];
+    private double[] rotaionAngles = {0, 0, 0}, axialTranslationAngles = {0, 0, 0};
     private boolean figureFilled = true;
 
     public Figures3D(JPanel canvas) {
@@ -22,15 +22,23 @@ public class Figures3D {
         for (int j = 0; j < this.figure.length; j++) {
             this.figure[j] = Arrays.copyOf(this.originalFigure[j], this.figure[j].length);
         }
-        xAxisRotation();
-        yAxisRotation();
-        zAxisRotation();
+        setCenterFigure();
+        setPriorityAxis();
+        setPriorityTranslationAxis();
         translation();
         escalation();
         copyToVertices();
         mergeSort.sort(0, facesZIndex[0].length - 1);
         zindex = facesZIndex[0][0];
         return Arrays.copyOf(faces, faces.length);
+    }
+
+    public int getPriorityAxis() {
+        return priorityAxis;
+    }
+
+    public void setPriorityAxis(int priorityAxis) {
+        this.priorityAxis = priorityAxis;
     }
 
     public void setCameraPoint(int[] cameraPoint) {
@@ -42,28 +50,25 @@ public class Figures3D {
         cameraPoint[1] = canvas.getHeight() / 2;
     }
 
-    public void setXAxisRotationAngle(double angle) {
-        this.rotaionAngles[0] += Math.toRadians(angle);
-    }
-
     public void setXAxisRotationAngle(double angle, boolean isGlobal) {
-        this.rotaionAngles[0] = Math.toRadians(angle);
-    }
-
-    public void setYAxisRotationAngle(double angle) {
-        this.rotaionAngles[1] += Math.toRadians(angle);
+        if (isGlobal)
+            this.rotaionAngles[0] = Math.toRadians(angle);
+        else
+            this.rotaionAngles[0] += Math.toRadians(angle);
     }
 
     public void setYAxisRotationAngle(double angle, boolean isGlobal) {
-        this.rotaionAngles[1] = Math.toRadians(angle);
-    }
-
-    public void setZAxisRotationAngle(double angle) {
-        this.rotaionAngles[2] += Math.toRadians(angle);
+        if (isGlobal)
+            this.rotaionAngles[1] = Math.toRadians(angle);
+        else
+            this.rotaionAngles[1] += Math.toRadians(angle);
     }
 
     public void setZAxisRotationAngle(double angle, boolean isGlobal) {
-        this.rotaionAngles[2] = Math.toRadians(angle);
+        if (isGlobal)
+            this.rotaionAngles[2] = Math.toRadians(angle);
+        else
+            this.rotaionAngles[2] += Math.toRadians(angle);
     }
 
     public void setTranslations(int dx, int dy, int dz) {
@@ -210,6 +215,21 @@ public class Figures3D {
         copyToOriginalFigure();
     }
 
+    public void addFigure(Figures3D figure) {
+        Face[] newFaces = figure.getFigure();
+        Face[] allFaces = new Face[newFaces.length + faces.length];
+        facesZIndex = new int[2][allFaces.length];
+        System.arraycopy(faces, 0, allFaces, 0, faces.length);
+        System.arraycopy(newFaces, 0, allFaces, faces.length, newFaces.length);
+        faces =  new Face[allFaces.length];
+        System.arraycopy(allFaces, 0, faces, 0, allFaces.length);
+        for (int face = 0; face < faces.length; face++) {
+            facesZIndex[0][face] = faces[face].getZIndex();
+            facesZIndex[1][face] = face;
+        }
+        copyToOriginalFigure();
+    }
+
     public void setColorsFace(Color color, Color fill, int faceIndex) {
         faces[faceIndex].setColor(color);
         faces[faceIndex].setFill(fill);
@@ -228,28 +248,45 @@ public class Figures3D {
         faces[faceIndex].setFill(fill);
     }
 
-    public void addFigure(Figures3D figure) {
-        Face[] newFaces = figure.getFigure();
-        Face[] allFaces = new Face[newFaces.length + faces.length];
-        facesZIndex = new int[2][allFaces.length];
-        System.arraycopy(faces, 0, allFaces, 0, faces.length);
-        System.arraycopy(newFaces, 0, allFaces, faces.length, newFaces.length);
-        faces =  new Face[allFaces.length];
-        System.arraycopy(allFaces, 0, faces, 0, allFaces.length);
-        for (int face = 0; face < faces.length; face++) {
-            facesZIndex[0][face] = faces[face].getZIndex();
-            facesZIndex[1][face] = face;
+    public String printZIndex() {
+        String zIndexString = "";
+        String indexString = "";
+        for (int i = 0; i < facesZIndex[0].length; ++i) {
+            zIndexString = zIndexString + facesZIndex[0][i] + " ";
+            indexString = indexString + facesZIndex[1][i] + " ";
         }
-        copyToOriginalFigure();
+        return zIndexString + "\n" + indexString;
     }
 
-    private void xAxisRotation() {
+    public int[] getCenterFigure() {
+        return centerFigure;
+    }
+
+    public double[] getRotaionAngles() {
+        return rotaionAngles;
+    }
+
+    public void setAnchorFigure(Figures3D anchorFigure) {
+        this.centerAxialTranslation = anchorFigure.getCenterFigure();
+        this.axialTranslationAngles = anchorFigure.getRotaionAngles();
+        this.priorityTranslationAxis = anchorFigure.getPriorityAxis();
+    }
+
+    public void setCenterFigure() {
+        int maxX = figure[0][0];
+        int minX = figure[0][0];
         int maxY = figure[1][0];
         int minY = figure[1][0];
         int maxZ = figure[2][0];
         int minZ = figure[2][0];
 
         for (int i = 0; i < figure[0].length; i++) {
+            if (maxX < figure[0][i]) {
+                maxX = figure[0][i];
+            }
+            if (minX > figure[0][i]) {
+                minX = figure[0][i];
+            }
             if (maxY < figure[1][i]) {
                 maxY = figure[1][i];
             }
@@ -263,10 +300,59 @@ public class Figures3D {
                 minZ = figure[2][i];
             }
         }
+        centerFigure[0] = (minX + maxX) / 2;
+        centerFigure[1] = (maxY + minY) / 2;
+        centerFigure[2] = (maxZ + minZ) / 2;
+    }
 
+    private void setPriorityAxis() {
+        switch (priorityAxis) {
+            case 0:
+                xAxisRotation();
+                yAxisRotation();
+                zAxisRotation();
+                break;
+
+            case 1:
+                yAxisRotation();
+                xAxisRotation();
+                zAxisRotation();
+                break;
+
+            case 2:
+                zAxisRotation();
+                xAxisRotation();
+                yAxisRotation();
+                break;
+        }
+    }
+
+    private void setPriorityTranslationAxis() {
+        switch (priorityTranslationAxis) {
+            case 0:
+                xAxisTranslation();
+                yAxisTranslation();
+                zAxisTranslation();
+                break;
+
+            case 1:
+                yAxisTranslation();
+                xAxisTranslation();
+                zAxisTranslation();
+                break;
+
+            case 2:
+                zAxisTranslation();
+                xAxisTranslation();
+                yAxisTranslation();
+                break;
+        }
+    }
+
+    private void xAxisRotation() {
         for (int i = 0; i < figure[0].length; i++) {
-            figure[1][i] -= (maxY + minY) / 2;
-            figure[2][i] -= (maxZ + minZ) / 2;
+            figure[1][i] -= centerFigure[1];
+            figure[2][i] -= centerFigure[2];
         }
 
         double[][] identityMatrixX = {
@@ -290,35 +376,15 @@ public class Figures3D {
 
 
         for (int i = 0; i < figure[0].length; i++) {
-            figure[1][i] += (maxY + minY) / 2;
-            figure[2][i] += (maxZ + minZ) / 2;
+            figure[1][i] += centerFigure[1];
+            figure[2][i] += centerFigure[2];
         }
     }
 
     private void yAxisRotation() {
-        int maxX = figure[0][0];
-        int minX = figure[0][0];
-        int maxZ = figure[2][0];
-        int minZ = figure[2][0];
-
         for (int i = 0; i < figure[0].length; i++) {
-            if (maxX < figure[0][i]) {
-                maxX = figure[0][i];
-            }
-            if (minX > figure[0][i]) {
-                minX = figure[0][i];
-            }
-            if (maxZ < figure[2][i]) {
-                maxZ = figure[2][i];
-            }
-            if (minZ > figure[2][i]) {
-                minZ = figure[2][i];
-            }
-        }
-
-        for (int i = 0; i < figure[0].length; i++) {
-            figure[0][i] -= (maxX + minX) / 2;
-            figure[2][i] -= (maxZ + minZ) / 2;
+            figure[0][i] -= centerFigure[0];
+            figure[2][i] -= centerFigure[2];
         }
 
         double[][] identityMatrixY = {
@@ -341,35 +407,15 @@ public class Figures3D {
         }
 
         for (int i = 0; i < figure[0].length; i++) {
-            figure[0][i] += (maxX + minX) / 2;
-            figure[2][i] += (maxZ + minZ) / 2;
+            figure[0][i] += centerFigure[0];
+            figure[2][i] += centerFigure[2];
         }
     }
 
     private void zAxisRotation() {
-        int maxX = figure[0][0];
-        int minX = figure[0][0];
-        int maxY = figure[1][0];
-        int minY = figure[1][0];
-
         for (int i = 0; i < figure[0].length; i++) {
-            if (maxX < figure[0][i]) {
-                maxX = figure[0][i];
-            }
-            if (minX > figure[0][i]) {
-                minX = figure[0][i];
-            }
-            if (maxY < figure[1][i]) {
-                maxY = figure[1][i];
-            }
-            if (minY > figure[1][i]) {
-                minY = figure[1][i];
-            }
-        }
-
-        for (int i = 0; i < figure[0].length; i++) {
-            figure[0][i] -= (maxX + minX) / 2;
-            figure[1][i] -= (maxY + minY) / 2;
+            figure[0][i] -= centerFigure[0];
+            figure[1][i] -= centerFigure[1];
         }
 
         double[][] identityMatrixZ = {
@@ -392,8 +438,102 @@ public class Figures3D {
         }
 
         for (int i = 0; i < figure[0].length; i++) {
-            figure[0][i] += (maxX + minX) / 2;
-            figure[1][i] += (maxY + minY) / 2;
+            figure[0][i] += centerFigure[0];
+            figure[1][i] += centerFigure[1];
+        }
+    }
+
+    private void xAxisTranslation() {
+        for (int i = 0; i < figure[0].length; i++) {
+            figure[1][i] -= centerAxialTranslation[1];
+            figure[2][i] -= centerAxialTranslation[2];
+        }
+
+        double[][] identityMatrixX = {
+                {1, 0, 0, 0},
+                {0, Math.cos(axialTranslationAngles[0]), -Math.sin(axialTranslationAngles[0]), 0},
+                {0, Math.sin(axialTranslationAngles[0]), Math.cos(axialTranslationAngles[0]), 0},
+                {0, 0, 0, 1}};
+        int[][] finalMatrix = new int[identityMatrixX.length][figure[0].length];
+
+        for (int i = 0; i < identityMatrixX.length; i++) {
+            for (int j = 0; j < figure[0].length; j++) {
+                for (int k = 0; k < identityMatrixX[0].length; k++) {
+                    finalMatrix[i][j] += Math.round(identityMatrixX[i][k] * figure[k][j]);
+                }
+            }
+        }
+
+        for (int j = 0; j < figure.length; j++) {
+            figure[j] = Arrays.copyOf(finalMatrix[j], figure[j].length);
+        }
+
+
+        for (int i = 0; i < figure[0].length; i++) {
+            figure[1][i] += centerAxialTranslation[1];
+            figure[2][i] += centerAxialTranslation[2];
+        }
+    }
+
+    private void yAxisTranslation() {
+        for (int i = 0; i < figure[0].length; i++) {
+            figure[0][i] -= centerAxialTranslation[0];
+            figure[2][i] -= centerAxialTranslation[2];
+        }
+
+        double[][] identityMatrixY = {
+                {Math.cos(axialTranslationAngles[1]), 0, Math.sin(axialTranslationAngles[1]), 0},
+                {0, 1, 0, 0},
+                {-Math.sin(axialTranslationAngles[1]), 0, Math.cos(axialTranslationAngles[1]), 0, 0},
+                {0, 0, 0, 1}};
+        int[][] finalMatrix = new int[identityMatrixY.length][figure[0].length];
+
+        for (int i = 0; i < identityMatrixY.length; i++) {
+            for (int j = 0; j < figure[0].length; j++) {
+                for (int k = 0; k < identityMatrixY[0].length; k++) {
+                    finalMatrix[i][j] += Math.round(identityMatrixY[i][k] * figure[k][j]);
+                }
+            }
+        }
+
+        for (int j = 0; j < figure.length; j++) {
+            figure[j] = Arrays.copyOf(finalMatrix[j], figure[j].length);
+        }
+
+        for (int i = 0; i < figure[0].length; i++) {
+            figure[0][i] += centerAxialTranslation[0];
+            figure[2][i] += centerAxialTranslation[2];
+        }
+    }
+
+    private void zAxisTranslation() {
+        for (int i = 0; i < figure[0].length; i++) {
+            figure[0][i] -= centerAxialTranslation[0];
+            figure[1][i] -= centerAxialTranslation[1];
+        }
+
+        double[][] identityMatrixZ = {
+                {Math.cos(axialTranslationAngles[2]), -Math.sin(axialTranslationAngles[2]), 0, 0},
+                {Math.sin(axialTranslationAngles[2]), Math.cos(axialTranslationAngles[2]), 0, 0},
+                {0, 0, 1, 0},
+                {0, 0, 0, 1}};
+        int[][] finalMatrix = new int[identityMatrixZ.length][figure[0].length];
+
+        for (int i = 0; i < identityMatrixZ.length; i++) {
+            for (int j = 0; j < figure[0].length; j++) {
+                for (int k = 0; k < identityMatrixZ[0].length; k++) {
+                    finalMatrix[i][j] += Math.round(identityMatrixZ[i][k] * figure[k][j]);
+                }
+            }
+        }
+
+        for (int j = 0; j < figure.length; j++) {
+            figure[j] = Arrays.copyOf(finalMatrix[j], figure[j].length);
+        }
+
+        for (int i = 0; i < figure[0].length; i++) {
+            figure[0][i] += centerAxialTranslation[0];
+            figure[1][i] += centerAxialTranslation[1];
         }
     }
 
@@ -470,23 +610,5 @@ public class Figures3D {
             facesZIndex[1][face] = face;
             i += faces[0].getPoints();
         }
-    }
-
-    private String imprimirZIndex() {
-        String zIndexString = "";
-        String indexString = "";
-        for (int i = 0; i < facesZIndex[0].length; ++i) {
-            zIndexString = zIndexString + facesZIndex[0][i] + " ";
-            indexString = indexString + facesZIndex[1][i] + " ";
-        }
-        return zIndexString + "\n" + indexString;
-    }
-
-    private int averageZ() {
-        int average = 0;
-        for (int z = 0; z < figure[2].length; z++) {
-            average += figure[2][z];
-        }
-        return average / figure[2].length;
     }
 }

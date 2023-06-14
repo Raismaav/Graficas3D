@@ -103,7 +103,7 @@ public class Face {
 
     public void setZIndex() {
         int[] zVector = new int[3];
-        getCenter(false);
+        getCenter();
         for (int i = 0; i < zVector.length; i++) {
             zVector[i] = centerFace[i] - cameraPoint[i];
         }
@@ -126,7 +126,7 @@ public class Face {
         plainVector[2] = vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0];
     }
 
-    private void getCenter(boolean returnCenter) {
+    private void getCenter() {
         int maxX = vertices[0][0];
         int minX = vertices[0][0];
         int maxY = vertices[1][0];
