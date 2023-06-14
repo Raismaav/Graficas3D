@@ -4,7 +4,7 @@ import java.util.Arrays;
 public class Face {
     private int[][] vertices, originalvertices;
     private Color color = Color.black;
-    private Color fill = Color.blue;
+    private Color fill = Color.black;
     private boolean faceFilled = true;
     private double[] plainVector;
     private int[] cameraPoint = {0,0,0};

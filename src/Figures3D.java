@@ -46,12 +46,24 @@ public class Figures3D {
         this.rotaionAngles[0] += Math.toRadians(angle);
     }
 
+    public void setXAxisRotationAngle(double angle, boolean isGlobal) {
+        this.rotaionAngles[0] = Math.toRadians(angle);
+    }
+
     public void setYAxisRotationAngle(double angle) {
-        this.rotaionAngles[1] +=  Math.toRadians(angle);
+        this.rotaionAngles[1] += Math.toRadians(angle);
+    }
+
+    public void setYAxisRotationAngle(double angle, boolean isGlobal) {
+        this.rotaionAngles[1] = Math.toRadians(angle);
     }
 
     public void setZAxisRotationAngle(double angle) {
-        this.rotaionAngles[2] +=  Math.toRadians(angle);
+        this.rotaionAngles[2] += Math.toRadians(angle);
+    }
+
+    public void setZAxisRotationAngle(double angle, boolean isGlobal) {
+        this.rotaionAngles[2] = Math.toRadians(angle);
     }
 
     public void setTranslations(int dx, int dy, int dz) {
@@ -216,7 +228,8 @@ public class Figures3D {
         faces[faceIndex].setFill(fill);
     }
 
-    public void addFigure(Face[] newFaces) {
+    public void addFigure(Figures3D figure) {
+        Face[] newFaces = figure.getFigure();
         Face[] allFaces = new Face[newFaces.length + faces.length];
         facesZIndex = new int[2][allFaces.length];
         System.arraycopy(faces, 0, allFaces, 0, faces.length);

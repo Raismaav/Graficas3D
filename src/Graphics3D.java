@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Graphics3D extends Graphics {
-    private BufferedImage bufferedFace;
     private Graphics2D graphics;
     private double[] projectionPlane = new double[] {10, 10, 50};
     private double[] cameraPosition, visionVector;
@@ -132,14 +131,12 @@ public class Graphics3D extends Graphics {
     }
 
     private void drawFigureProjected(Face[] faces, int face, int[][] figureProjected) {
-        bufferedFace = new BufferedImage(buffer.getWidth(), buffer.getHeight(), BufferedImage.TYPE_INT_ARGB);
         if (faces[face].isFaceFilled())
-            fillFace(figureProjected, faces[face].getFill(), bufferedFace, true);
-        drawLine(figureProjected[0][figureProjected[0].length - 1], figureProjected[1][figureProjected[0].length - 1], figureProjected[0][0], figureProjected[1][0], faces[face].getColor(), bufferedFace);
+            fillFace(figureProjected, faces[face].getFill());
+        drawLine(figureProjected[0][figureProjected[0].length - 1], figureProjected[1][figureProjected[0].length - 1], figureProjected[0][0], figureProjected[1][0], faces[face].getColor());
         for(int i = 1; i < figureProjected[0].length; i++) {
-            drawLine(figureProjected[0][i - 1], figureProjected[1][i - 1], figureProjected[0][i], figureProjected[1][i], faces[face].getColor(), bufferedFace);
+            drawLine(figureProjected[0][i - 1], figureProjected[1][i - 1], figureProjected[0][i], figureProjected[1][i], faces[face].getColor());
         }
-        drawAuxbuffer(bufferedFace);
     }
 
     private boolean backFaceCulling(double[] plainVector) {
@@ -154,37 +151,10 @@ public class Graphics3D extends Graphics {
             return false;
     }
 
-    private void fillFace(int[][] figureProjected, Color fill, BufferedImage auxBuffer, boolean g) {
-        if(g) {
-            graphics = (Graphics2D) auxBuffer.createGraphics();
-            graphics.setColor(fill);
-            graphics.fillPolygon(figureProjected[0], figureProjected[1], 4);
-        }
-    }
-
-    private void fillFace(int[][] figureProjected, Color fill, BufferedImage auxBuffer) {
-        int maxX = figureProjected[0][0];
-        int minX = figureProjected[0][0];
-        int maxY = figureProjected[1][0];
-        int minY = figureProjected[1][0];
-
-        for (int i = 0; i < figureProjected[0].length; i++) {
-            if (maxX < figureProjected[0][i]) {
-                maxX = figureProjected[0][i];
-            }
-            if (minX > figureProjected[0][i]) {
-                minX = figureProjected[0][i];
-            }
-            if (maxY < figureProjected[1][i]) {
-                maxY = figureProjected[1][i];
-            }
-            if (minY > figureProjected[1][i]) {
-                minY = figureProjected[1][i];
-            }
-        }
-        int x = (minX + maxX) / 2;
-        int y = (minY + maxY) / 2;
-        scanLineFill(x, y, auxBuffer.getRGB(x,y), fill, maxX, minX, maxY, minY, auxBuffer);
+    private void fillFace(int[][] figureProjected, Color fill) {
+        graphics = (Graphics2D) buffer.createGraphics();
+        graphics.setColor(fill);
+        graphics.fillPolygon(figureProjected[0], figureProjected[1], 4);
     }
 
     private void scanLineFill(int x, int y, int targetColor, Color fill,  int maxX, int minX, int maxY, int minY, BufferedImage auxBuffer) {
