@@ -33,10 +33,10 @@ public class Window extends JFrame  implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            cube.setXAxisRotationAngle(-2);
+            //cube.setXAxisRotationAngle(-2);
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            cube.setXAxisRotationAngle(2);
+            //cube.setXAxisRotationAngle(2);
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             cube.setYAxisRotationAngle(-2);

@@ -22,6 +22,12 @@ public class RubikCube extends Thread {
     }
 
     public void run() {
+        green.firstSpin(-1);
+        yellow.firstSpin(-1);
+        red.firstSpin(-1);
+        white.firstSpin(-1);
+        orange.firstSpin(-1);
+        blue.firstSpin(-1);
         while (true) {
             graphics3D.repaintBackground();
             graphics3D.conicalProjection();

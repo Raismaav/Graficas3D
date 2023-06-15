@@ -9,7 +9,7 @@ public class Figures3D {
     private int[][] figure, originalFigure, facesZIndex;
     private Face[] faces;
     private int[] cameraPoint = {0,0,1000}, centerFigure = new int[3], centerAxialTranslation = new int[3];
-    private double[] rotaionAngles = {0, 0, 0}, axialTranslationAngles = {0, 0, 0};
+    private double[] rotationAngles = {0, 0, 0}, axialTranslationAngles = {0, 0, 0};
     private boolean figureFilled = true, anchored = false, anchoredInAnchorFigure = false;
 
     public Figures3D(JPanel canvas) {
@@ -44,23 +44,23 @@ public class Figures3D {
 
     public void setXAxisRotationAngle(double angle, boolean isGlobal) {
         if (isGlobal)
-            this.rotaionAngles[0] = Math.toRadians(angle);
+            this.rotationAngles[0] = Math.toRadians(angle);
         else
-            this.rotaionAngles[0] += Math.toRadians(angle);
+            this.rotationAngles[0] += Math.toRadians(angle);
     }
 
     public void setYAxisRotationAngle(double angle, boolean isGlobal) {
         if (isGlobal)
-            this.rotaionAngles[1] = Math.toRadians(angle);
+            this.rotationAngles[1] = Math.toRadians(angle);
         else
-            this.rotaionAngles[1] += Math.toRadians(angle);
+            this.rotationAngles[1] += Math.toRadians(angle);
     }
 
     public void setZAxisRotationAngle(double angle, boolean isGlobal) {
         if (isGlobal)
-            this.rotaionAngles[2] = Math.toRadians(angle);
+            this.rotationAngles[2] = Math.toRadians(angle);
         else
-            this.rotaionAngles[2] += Math.toRadians(angle);
+            this.rotationAngles[2] += Math.toRadians(angle);
     }
 
     public void setTranslations(int dx, int dy, int dz) {
@@ -128,9 +128,10 @@ public class Figures3D {
         return centerAxialTranslation;
     }
 
-    public double[] getRotaionAngles() {
-        return rotaionAngles;
+    public double[] getRotationAngles() {
+        return rotationAngles;
     }
+
     public double[] getAxialTranslationAngles () {
         return axialTranslationAngles;
     }
@@ -140,12 +141,12 @@ public class Figures3D {
             this.centerAxialTranslation = anchorFigure.getCenterAxialTranslation();
             this.axialTranslationAngles = anchorFigure.getAxialTranslationAngles();
             this.centerFigure = anchorFigure.getCenterFigure();
-            this.rotaionAngles = anchorFigure.getRotaionAngles();
+            this.rotationAngles = anchorFigure.getRotationAngles();
             anchoredInAnchorFigure = true;
         }
         else {
             this.centerAxialTranslation = anchorFigure.getCenterFigure();
-            this.axialTranslationAngles = anchorFigure.getRotaionAngles();
+            this.axialTranslationAngles = anchorFigure.getRotationAngles();
             anchored = true;
         }
         this.priorityTranslationAxis = anchorFigure.getPriorityAxis();
@@ -370,8 +371,8 @@ public class Figures3D {
 
         double[][] identityMatrixX = {
                 {1, 0, 0, 0},
-                {0, Math.cos(rotaionAngles[0]), -Math.sin(rotaionAngles[0]), 0},
-                {0, Math.sin(rotaionAngles[0]), Math.cos(rotaionAngles[0]), 0},
+                {0, Math.cos(rotationAngles[0]), -Math.sin(rotationAngles[0]), 0},
+                {0, Math.sin(rotationAngles[0]), Math.cos(rotationAngles[0]), 0},
                 {0, 0, 0, 1}};
         int[][] finalMatrix = new int[identityMatrixX.length][figure[0].length];
 
@@ -401,9 +402,9 @@ public class Figures3D {
         }
 
         double[][] identityMatrixY = {
-                {Math.cos(rotaionAngles[1]), 0, Math.sin(rotaionAngles[1]), 0},
+                {Math.cos(rotationAngles[1]), 0, Math.sin(rotationAngles[1]), 0},
                 {0, 1, 0, 0},
-                {-Math.sin(rotaionAngles[1]), 0, Math.cos(rotaionAngles[1]), 0, 0},
+                {-Math.sin(rotationAngles[1]), 0, Math.cos(rotationAngles[1]), 0, 0},
                 {0, 0, 0, 1}};
         int[][] finalMatrix = new int[identityMatrixY.length][figure[0].length];
 
@@ -432,8 +433,8 @@ public class Figures3D {
         }
 
         double[][] identityMatrixZ = {
-                {Math.cos(rotaionAngles[2]), -Math.sin(rotaionAngles[2]), 0, 0},
-                {Math.sin(rotaionAngles[2]), Math.cos(rotaionAngles[2]), 0, 0},
+                {Math.cos(rotationAngles[2]), -Math.sin(rotationAngles[2]), 0, 0},
+                {Math.sin(rotationAngles[2]), Math.cos(rotationAngles[2]), 0, 0},
                 {0, 0, 1, 0},
                 {0, 0, 0, 1}};
         int[][] finalMatrix = new int[identityMatrixZ.length][figure[0].length];

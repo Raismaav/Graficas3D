@@ -54,7 +54,7 @@ public class RubikFace {
             }
         }
         try {
-            for (int i = 0; i < 90; i++) {
+            for (int i = 0; i < 360; i++) {
                 switch (center.getPriorityAxis()) {
                     case 0:
                         center.setXAxisRotationAngle(angle, false);
@@ -74,6 +74,30 @@ public class RubikFace {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void firstSpin(double angle) {
+        for (int j = 0; j < sharedFigures.length; j++) {
+            for (int i = 0; i < sharedFigures[0].length; i++) {
+                sharedFigures[j][i].setAnchorFigure(center);
+            }
+        }
+        for (int i = 0; i < 360; i++) {
+            switch (center.getPriorityAxis()) {
+                case 0:
+                    center.setXAxisRotationAngle(angle, false);
+                    break;
+
+                case 1:
+                    center.setYAxisRotationAngle(angle, false);
+                    break;
+
+                case 2:
+                    center.setZAxisRotationAngle(angle, false);
+                    break;
+            }
+        }
+        //changeFigures();
     }
 
     private void changeFigures() {
