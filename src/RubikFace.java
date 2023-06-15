@@ -23,23 +23,23 @@ public class RubikFace {
     }
 
     public void setRightNeighborFace(RubikFace rightFace, int index, Figures3D cornerUp, Figures3D arist, Figures3D cornerDown) {
-        sharedFigures[0][0] = cornerUp;
-        sharedFigures[0][1] = arist;
-        sharedFigures[0][2] = cornerDown;
+        sharedFigures[1][0] = cornerUp;
+        sharedFigures[1][1] = arist;
+        sharedFigures[1][2] = cornerDown;
         this.neighborFaces[1] = new NeighborFace(rightFace, index);
     }
 
     public void setDownNeighborFace(RubikFace downFace, int index, Figures3D cornerLeft, Figures3D arist, Figures3D cornerRight) {
-        sharedFigures[0][0] = cornerRight;
-        sharedFigures[0][1] = arist;
-        sharedFigures[0][2] = cornerLeft;
+        sharedFigures[2][0] = cornerRight;
+        sharedFigures[2][1] = arist;
+        sharedFigures[2][2] = cornerLeft;
         this.neighborFaces[2] = new NeighborFace(downFace, index);
     }
 
     public void setLeftNeighborFace(RubikFace leftFace, int index, Figures3D cornerUp, Figures3D arist, Figures3D cornerDown) {
-        sharedFigures[0][0] = cornerDown;
-        sharedFigures[0][1] = arist;
-        sharedFigures[0][2] = cornerUp;
+        sharedFigures[3][0] = cornerDown;
+        sharedFigures[3][1] = arist;
+        sharedFigures[3][2] = cornerUp;
         this.neighborFaces[3] = new NeighborFace(leftFace, index);
     }
 
@@ -48,7 +48,11 @@ public class RubikFace {
     }
 
     public void spin(double angle) {
-
+        for (int j = 0; j < sharedFigures.length; j++) {
+            for (int i = 0; i < sharedFigures[0].length; i++) {
+                sharedFigures[j][i].setAnchorFigure(center);
+            }
+        }
         try {
             for (int i = 0; i < 90; i++) {
                 switch (center.getPriorityAxis()) {

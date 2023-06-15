@@ -59,74 +59,14 @@ public class RubikCube extends Thread {
     }
 
     public void setXAxisRotationAngle(double angle) {
-        aristWR.setAnchorFigure(core);
-        aristWO.setAnchorFigure(core);
-        aristWG.setAnchorFigure(core);
-        aristWB.setAnchorFigure(core);
-        aristRG.setAnchorFigure(core);
-        aristRB.setAnchorFigure(core);
-        aristOG.setAnchorFigure(core);
-        aristOB.setAnchorFigure(core);
-        aristYR.setAnchorFigure(core);
-        aristYO.setAnchorFigure(core);
-        aristYG.setAnchorFigure(core);
-        aristYB.setAnchorFigure(core);
-        cornerWRG.setAnchorFigure(core);
-        cornerWOG.setAnchorFigure(core);
-        cornerWRB.setAnchorFigure(core);
-        cornerWOB.setAnchorFigure(core);
-        cornerYRG.setAnchorFigure(core);
-        cornerYOG.setAnchorFigure(core);
-        cornerYRB.setAnchorFigure(core);
-        cornerYOB.setAnchorFigure(core);
         core.setXAxisRotationAngle(angle, false);
     }
 
     public void setYAxisRotationAngle(double angle) {
-        aristWR.setAnchorFigure(core);
-        aristWO.setAnchorFigure(core);
-        aristWG.setAnchorFigure(core);
-        aristWB.setAnchorFigure(core);
-        aristRG.setAnchorFigure(core);
-        aristRB.setAnchorFigure(core);
-        aristOG.setAnchorFigure(core);
-        aristOB.setAnchorFigure(core);
-        aristYR.setAnchorFigure(core);
-        aristYO.setAnchorFigure(core);
-        aristYG.setAnchorFigure(core);
-        aristYB.setAnchorFigure(core);
-        cornerWRG.setAnchorFigure(core);
-        cornerWOG.setAnchorFigure(core);
-        cornerWRB.setAnchorFigure(core);
-        cornerWOB.setAnchorFigure(core);
-        cornerYRG.setAnchorFigure(core);
-        cornerYOG.setAnchorFigure(core);
-        cornerYRB.setAnchorFigure(core);
-        cornerYOB.setAnchorFigure(core);
         core.setYAxisRotationAngle(angle, false);
     }
 
     public void setZAxisRotationAngle(double angle) {
-        aristWR.setAnchorFigure(core);
-        aristWO.setAnchorFigure(core);
-        aristWG.setAnchorFigure(core);
-        aristWB.setAnchorFigure(core);
-        aristRG.setAnchorFigure(core);
-        aristRB.setAnchorFigure(core);
-        aristOG.setAnchorFigure(core);
-        aristOB.setAnchorFigure(core);
-        aristYR.setAnchorFigure(core);
-        aristYO.setAnchorFigure(core);
-        aristYG.setAnchorFigure(core);
-        aristYB.setAnchorFigure(core);
-        cornerWRG.setAnchorFigure(core);
-        cornerWOG.setAnchorFigure(core);
-        cornerWRB.setAnchorFigure(core);
-        cornerWOB.setAnchorFigure(core);
-        cornerYRG.setAnchorFigure(core);
-        cornerYOG.setAnchorFigure(core);
-        cornerYRB.setAnchorFigure(core);
-        cornerYOB.setAnchorFigure(core);
         core.setZAxisRotationAngle(angle, false);
     }
 

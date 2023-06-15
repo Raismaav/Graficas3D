@@ -3,12 +3,12 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class Ventana extends JFrame  implements KeyListener {
+public class Window extends JFrame  implements KeyListener {
     private JPanel canvas;
     private RubikCube cube;
     private boolean isSpinned = false;
 
-    public Ventana() {
+    public Window() {
         setTitle("Graficos 3D");
         setSize(900, 600);
         setLayout(null);
